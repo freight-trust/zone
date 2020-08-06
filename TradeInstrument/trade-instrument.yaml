@@ -1,0 +1,5291 @@
+openapi: 3.0.0
+info:
+  description: >+
+    This REST API provides the ability to query various data elements in the
+    system.
+
+
+    Please click this link to enable Swagger to call the APIs.  Without this step, all attempts to try out the APIs will result in a 401 Not Authorized error.
+
+  version: 1.87.0
+  title: Freight Trust Network TradeInstrument API
+tags:
+  - name: Event Queries
+    description: " "
+  - name: Consignment Queries
+    description: " "
+  - name: Shipment Queries
+    description: " "
+  - name: Trade Instrument Id Queries
+    description: " "
+  - name: Transport Equipment Queries
+    description: " "
+paths:
+  /api/v1/consignments:
+    get:
+      tags:
+        - Consignment Queries
+      summary: Query all consignments
+      description: >
+        Queries for all consignments visible to the user, filtered using the
+        criteria below.
+
+
+        We return up to a maximum of 1000 consignments in one query. Paging is used to retrieve consignments beyond this number. Provide the "newFrom" value from the response body as the "from" parameter to retrieve the next page of results. If "from" is given, all other parameters are ignored, except for "size".
+
+
+        For the fields listed below, wildcard matching is supported. A '*' can be used in place of one or more characters, and a '?' can replace a single character.
+
+        - exportCountry
+
+        - importCountry
+
+        - entryPort
+
+        - exitPort
+
+        - consignmentId
+
+        - consignmentRef
+
+        - transportEquipmentId
+
+        - transportEquipmentRef
+
+        - harmonizedCode
+
+        - billOfLadingNumber
+
+        - carrierBookingNumber
+
+        - originLocation
+
+        - destinationLocation
+
+        - terminal
+
+
+        Commodity information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of the correct types, then the following fields will be removed from all consignment response objects, and you will not be allowed to search on these fields:
+
+        - harmonizedCode
+
+        - commodityHarmonizedCode (in the commodities array in bookingData)
+
+        - commodityDescription (in the commodities array in bookingData)
+      operationId: queryConsignmentsUsingGET
+      parameters:
+        - name: size
+          in: query
+          description: Optional, number of consignments to return, max 1000
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: from
+          in: query
+          description:
+            Optional, bookmark to get the next chunk of results to a previously
+            executed query. This must be the newFrom value from a previous
+            consignments query.
+          required: false
+          schema:
+            type: string
+        - name: createdBy
+          in: query
+          description:
+            Optional, only include results that were created by any of the given
+            organizations
+          required: false
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: createdAfter
+          in: query
+          description:
+            Optional, only include results that were created on or after this
+            date. The date must be in epoch format.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: createdBefore
+          in: query
+          description:
+            Optional, only include results that were created on or before this
+            date. The date must be in epoch format.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: exportCountry
+          in: query
+          description: Optional, only include results that match this export country
+          required: false
+          schema:
+            type: string
+        - name: importCountry
+          in: query
+          description: Optional, only include results that match this import country
+          required: false
+          schema:
+            type: string
+        - name: entryPort
+          in: query
+          description: Optional, only include results that match this entry port
+          required: false
+          schema:
+            type: string
+        - name: exitPort
+          in: query
+          description: Optional, only include results that match this exit port
+          required: false
+          schema:
+            type: string
+        - name: consignmentId
+          in: query
+          description: Optional, only include results that match this consignment ID
+          required: false
+          schema:
+            type: string
+        - name: consignmentRef
+          in: query
+          description: Optional, only include results that match this consignment reference
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Optional, only include results that match this consignment status
+          required: false
+          schema:
+            type: string
+        - name: transportEquipmentId
+          in: query
+          description:
+            Optional, only include results with a container that matches this
+            transport equipment ID
+          required: false
+          schema:
+            type: string
+        - name: transportEquipmentRef
+          in: query
+          description:
+            Optional, only include results with a container that matches this
+            transport equipment reference
+          required: false
+          schema:
+            type: string
+        - name: equipmentNumber
+          in: query
+          description:
+            Optional, only include results with a transport equipment that
+            matches this equipment number
+          required: false
+          schema:
+            type: string
+        - name: billOfLadingNumber
+          in: query
+          description: Optional, only include results that match this bill of lading number
+          required: false
+          schema:
+            type: string
+        - name: harmonizedCode
+          in: query
+          description:
+            Optional, only include results that match this harmonized system
+            code. Your org must have permission to see commodity information to
+            search on this parameter
+          required: false
+          schema:
+            type: string
+        - name: carrierBookingNumber
+          in: query
+          description: Optional, only include results that match this carrier booking number
+          required: false
+          schema:
+            type: string
+        - name: terminal
+          in: query
+          description: Optional, only include results that match this terminal name
+          required: false
+          schema:
+            type: string
+        - name: startPlannedVesselDeparture
+          in: query
+          description:
+            Optional, start date in Planned Vessel Departure date range. Only
+            include results where a consignment leaves the Exit Port (Planned
+            Vessel Departure) on this date or later. The date must be in epoch
+            milliseconds format. The value used will be this epoch day at time
+            00:00:01 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endPlannedVesselDeparture
+          in: query
+          description:
+            Optional, end date in Planned Vessel Departure date range. Only
+            include results where a consignment leaves the Exit Port (Planned
+            Vessel Departure) on this date or earlier. The date must be in epoch
+            milliseconds format. The value used will be this epoch day at time
+            23:59:59 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: startPlannedVesselArrival
+          in: query
+          description:
+            Optional, start date in Planned Vessel Arrival date range. Only
+            include results where a consignment arrives at the Entry Port
+            (Planned Vessel Arrival) on this date or later. The date must be in
+            epoch milliseconds format. The value used will be this epoch day at
+            time 00:00:01 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endPlannedVesselArrival
+          in: query
+          description:
+            Optional, end date in Planned Vessel Arrival date range. Only
+            include results where a consignment arrives at the Entry Port
+            (Planned Vessel Arrival) on this date or earlier. The date must be
+            in epoch milliseconds format. The value used will be this epoch day
+            at time 23:59:59 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: originLocation
+          in: query
+          description:
+            Optional, only include results that match the value of the origin
+            location. Searches for matches in the originLocation in the booking
+            data as well as the exit port
+          required: false
+          schema:
+            type: string
+        - name: destinationLocation
+          in: query
+          description:
+            Optional, only include results that match the value of the
+            destination location. Searches for matches in the
+            destinationLocation in the bookingData as well as the entry port
+          required: false
+          schema:
+            type: string
+        - name: startBookingDepartureDate
+          in: query
+          description:
+            Optional, start departure date in Booking . Only include results
+            where a consignment leaves the origin on this date or later. The
+            date must be in epoch milliseconds format. The value used will be
+            this epoch day at time 00:00:01 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endBookingDepartureDate
+          in: query
+          description:
+            Optional, end departure date in Booking. Only include results when a
+            consignment arrives at the destination on this date or earlier. The
+            date must be in epoch milliseconds format. The value used will be
+            this epoch day at time 23:59:59 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: commodityHarmonizedCode
+          in: query
+          description:
+            Optional, only include results that match this commodity harmonized
+            system code. Your org must have permission to see harmonized system
+            codes to search on this parameter
+          required: false
+          schema:
+            type: string
+        - name: commodityDescription
+          in: query
+          description: Optional, only include results that match this commodity
+            description. Your org must have permission to see commodity
+            information to search on this parameter
+          required: false
+          schema:
+            type: string
+        - name: vehicleName
+          in: query
+          description:
+            Optional, only include results that match this vehicleName in the
+            bookingData
+          required: false
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsignmentQueryResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  /api/v1/consignments/creators:
+    get:
+      tags:
+        - Consignment Queries
+      summary: Query for organization names of consignment creators
+      description:
+        Queries for the names of all organizations that have created a
+        consignment that the user has access to.
+      operationId: queryConsignmentCreatorsUsingGET
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsignmentCreatorsResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  "/api/v1/consignments/events/consignmentId/{consignmentId}":
+    get:
+      tags:
+        - Consignment Queries
+      summary: Query for consignment events by consignment ID
+      description: >
+        Commodity and originator information visibility is restricted to orgs
+        that were onboarded with certain types. If your org does not have one of
+        these correct types, then you may not have visibility to the following
+        fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: queryConsignmentEventsByConsignmentIdUsingGET
+      parameters:
+        - name: consignmentId
+          in: path
+          description: Get the events of this consignment
+          required: true
+          schema:
+            type: string
+        - name: eventFilter
+          in: query
+          description: "{all | latest}"
+          required: false
+          schema:
+            type: string
+            default: all
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsignmentEventsResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  "/api/v1/consignments/transportSummaries/consignmentId/{consignmentId}":
+    get:
+      tags:
+        - Consignment Queries
+      summary: Get the transport summary for a consignment given a consignment ID
+      description: >
+        Provide the consignment ID for a consignment. 
+
+        Transport Plan Analysis: This endpoint will return all of the transport plans for the consignment, ordered from most recent to oldest. Each transport plan will include a list of planned events, ordered by the event occurrence time. Together these events indicate the series of locations that each transport equipment, that is associated with the given consignnment, will move on its journey.
+
+
+        Planned events provide the planned route of a transport equipment.
+
+
+        Note that the only events returned by this endpoint are the set of events known as “transport” planned events. This does NOT include consignment, transport equipment, generic, or document events. For a complete list of transport events, see the Transport Events category in the Event Publish Swagger documentation. To get all events for a consignment use the …/events/consignmentId/{consignmentId} endpoint.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: transportSummaryConsignmentIdUsingGET
+      parameters:
+        - name: consignmentId
+          in: path
+          description: Consignment ID
+          required: true
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsignmentVersionedTransportSummary"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  /api/v1/shipments:
+    get:
+      tags:
+        - Shipment Queries
+      summary: Query all shipments
+      description: >+
+        Queries for all shipments visible to the user, filtered using the
+        criteria below.
+
+
+        We return up to a maximum of 1000 shipments in one query. Paging is used to retrieve shipments beyond this number. Provide the "newFrom" value from the response body as the "from" parameter to retrieve the next page of results. If "from" is given, all other parameters are ignored, except for "size".
+
+
+        Note: A leading wildcard will not be added to shipment queries.
+
+      operationId: queryShipmentsUsingGET
+      parameters:
+        - name: size
+          in: query
+          description: Optional, number of shipments to return, max 1000.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: from
+          in: query
+          description:
+            Optional, bookmark to get the next chunk of results to a previously
+            executed query. This must be the newFrom value from a previous
+            shipment query.
+          required: false
+          schema:
+            type: string
+        - name: shipmentId
+          in: query
+          description: Optional, only include results that match this shipment ID.
+          required: false
+          schema:
+            type: string
+        - name: createdBy
+          in: query
+          description: Optional, only include results that were created by the given party.
+          required: false
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: createdAfter
+          in: query
+          description:
+            Optional, only include results that were created on or after this
+            date. The date must be in epoch format.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: createdBefore
+          in: query
+          description:
+            Optional, only include results that were created on or before this
+            date. The date must be in epoch format.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: myRole
+          in: query
+          description:
+            Optional, only include results where the caller has one of the given
+            roles.
+          required: false
+          schema:
+            type: string
+        - name: referenceType
+          in: query
+          description:
+            Optional, only include results that match this reference type for
+            the shipment.
+          required: false
+          schema:
+            type: string
+        - name: references
+          in: query
+          description:
+            Optional, only include results that match these references
+            number/code for the shipment.
+          required: false
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: seller
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: buyer
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: exporter
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: importer
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: origin3plAgent
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: destination3plAgent
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: exportCustomsBroker
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: importCustomsBroker
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: exportAuthority
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: importAuthority
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: buyersBank
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: sellersBank
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: insuranceProvider
+          in: query
+          description:
+            Optional, only include results where the party reference matches the
+            role.
+          required: false
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentQueryResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  /api/v1/shipments/creators:
+    get:
+      tags:
+        - Shipment Queries
+      summary: Query for organization names of shipment creators
+      description:
+        Queries for the names of all organizations that have created a shipment
+        that the user has access to.
+      operationId: queryShipmentCreatorsUsingGET
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentCreatorsResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  "/api/v1/shipments/{shipmentId}/events":
+    get:
+      tags:
+        - Shipment Queries
+      summary: Fetch a specific shipment's events
+      operationId: queryShipmentEventsUsingGET
+      parameters:
+        - name: shipmentId
+          in: path
+          description: Fetch the events for a specific shipment.
+          required: true
+          schema:
+            type: string
+        - name: eventFilter
+          in: query
+          description: "{all | latest}"
+          required: false
+          schema:
+            type: string
+            default: all
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentEventsResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  /api/v1/tradeObjectIds:
+    post:
+      tags:
+        - Trade Instrument Id Queries
+      summary: Query for a Freight Trust Network object id by external references.
+      description: >+
+        Queries for unique IDs of Freight Trust Network objects matching the given search
+        criteria.
+
+
+        Search for consignments by providing the 'consignment' search criteria. Matching consignment IDs are returned.
+
+
+        Search for transport equipments by providing the 'transportEquipment' search criteria. Matching transport equipment IDs are returned.
+
+
+        Search for shipments by providing the 'shipment' search criteria. Matching shipment IDs are returned.
+
+      operationId: queryTradeInstrumentIdsUsingPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TradeInstrumentIdsIdentifiers"
+        description:
+          See Model to the right for the full description of the identifiers.
+          Note that only one identifier can be specified (consignment,
+          transportEquipment or shipment) and within that identifier, at least
+          one field must be specified but not all are required.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TradeInstrumentIdsResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  "/api/v1/transportEquipment/currentProgress/consignmentId/{consignmentId}":
+    get:
+      tags:
+        - Transport Equipment Queries
+      summary: "Get the current progress for one or more pieces of transport equipment "
+      description: >
+        Provide the consignmentId of a Consignment. Returns the current progress
+        of all transport equipment associated with that consignment. 
+
+
+        Transport events are divided into three categories: planned, estimated and actual. Planned events provide the planned route of a transport equipment. Estimated events provide the estimated time things will occur to the transport equipment. Actual events indicate things that occurred to the transport equipment.
+
+
+        Current Progress Analysis: 
+
+        The current progress will include a list of current progress events, ordered by the sequence in which they occur. Together these events indicate the series of locations that each transport equipment will move, or has moved, on its journey and everything that happened to it along the way. 
+
+        Each current progress event is made up of a list of actual events, a list of estimated events and the associated planned event.
+
+
+        Note that the only events returned by this endpoint are the set of events known as “transport” events. This does NOT include consignment, transport equipment, generic, or document events. For a complete list of transport events, see the Transport Events category in the Event Publish Swagger documentation. To get all events for a consignment or transport equipment, use the …/events/... endpoint.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: currentProgressConsignmentIdUsingGET
+      parameters:
+        - name: consignmentId
+          in: path
+          description: Consignment ID
+          required: true
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentProgressResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  ? "/api/v1/transportEquipment/currentProgress/splitFromConsignment/{consignmentId}"
+  : get:
+      tags:
+        - Transport Equipment Queries
+      summary:
+        Get the current progress for one or more pieces of transport equipment
+        that were split from the consignment with the given consignment ID
+      description: >
+        Provide the consignmentId for a consignment. Returns the current
+        progress for all of the transport equipment split from the consignment
+        that are not yet associated with another consignment. 
+
+        Current Progress Analysis: 
+
+        The current progress will include a list of current progress events, ordered by the sequence in which they occur. Together these events indicate the series of locations that each transport equipment will move, or has moved, on its journey and everything that happened to it along the way. 
+
+        Each current progress event is made up of a list of actual events, a list of estimated events and the associated planned event.
+
+
+        Note that the only events returned by this endpoint are the set of events known as “transport” events. This does NOT include consignment, transport equipment, generic, or document events. For a complete list of transport events, see the Transport Events category in the Event Publish Swagger documentation. To get all events for a consignment or transport equipment, use the …/events/... endpoint.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: currentProgressSplitFromConsignmentByIDUsingGET
+      parameters:
+        - name: consignmentId
+          in: path
+          description: Consignment ID
+          required: true
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentProgressResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  ? "/api/v1/transportEquipment/currentProgress/transportEquipmentId/{transportEquipmentId}"
+  : get:
+      tags:
+        - Transport Equipment Queries
+      summary: "Get the current progress for a transport equipment "
+      description: >
+        Provide the transport equipment ID of a transport equipment. Returns the
+        current progress of the transport equipment with that ID. 
+
+        Transport events are divided into three categories: planned, estimated and actual. Planned events provide the planned route of a transport equipment. Estimated events provide the estimated time things will occur to the transport equipment. Actual events indicate things that occurred to the transport equipment.
+
+
+        Current Progress Analysis: 
+
+        The current progress will include a list of current progress events, ordered by the sequence in which they occur. Together these events indicate the series of locations that each transport equipment will move, or has moved, on its journey and everything that happened to it along the way. 
+
+        Each current progress event is made up of a list of actual events, a list of estimated events and the associated planned event.
+
+
+        Note that the only events returned by this endpoint are the set of events known as “transport” events. This does NOT include consignment, transport equipment, generic, or document events. For a complete list of transport events, see the Transport Events category in the Event Publish Swagger documentation. To get all events for a consignment or transport equipment, use the …/events/... endpoint.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: currentProgressTEIdUsingGET
+      parameters:
+        - name: transportEquipmentId
+          in: path
+          description: Transport Equipment ID
+          required: true
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentProgressResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  "/api/v1/transportEquipment/events/consignmentId/{consignmentId}":
+    get:
+      tags:
+        - Transport Equipment Queries
+      summary: Query TE events by consignment ID
+      description: >
+        Query for events belonging to all Transport Equipments associated with
+        the Consignment with the given ID. The event filter parameter can be
+        used to control how much processing is done to the resulting list.
+
+
+
+        * latest - Only the most recent versions of an event will be returned. The transportPlanIssuanceTime8601 will be used to determine the most recent Planned events. All Actual events will be returned, no filtering is done. For Estimated events, the location, the eventSubmissionTime, the originatorId, and the fullStatus fields will be used. For non transport events, the eventSubmissionTime will be used.
+
+
+
+        * all - No filtering is done. All events are returned.
+
+
+
+        If the eventFilter is not specified, the default is "all".  You may optionally specify a transportEquipmentId to return only results for the transport equipment with that ID.
+
+
+
+        The list of events are sorted on occurrence time if present, otherwise the submission time.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: queryTEEventsConsignmentIdUsingGET
+      parameters:
+        - name: consignmentId
+          in: path
+          description: Consignment ID
+          required: true
+          schema:
+            type: string
+        - name: eventFilter
+          in: query
+          description: "{all | latest}"
+          required: false
+          schema:
+            type: string
+        - name: transportEquipmentIdFilter
+          in: query
+          description: Transport Equipment ID
+          required: false
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewAllEventsQueryResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  ? "/api/v1/transportEquipment/events/transportEquipmentId/{transportEquipmentId}"
+  : get:
+      tags:
+        - Transport Equipment Queries
+      summary: Query TE events by TE ID
+      description: >
+        Query for events for the Transport Equipment with the given ID. The
+        event filter parameter can be used to control how much processing is
+        done to the resulting list.
+
+
+
+        * latest - Only the most recent versions of an event will be returned. The transportPlanIssuanceTime8601 will be used to determine the most recent Planned events. All Actual events will be returned, no filtering is done. For Estimated events, the location, the eventSubmissionTime, the originatorId, and the fullStatus fields will be used. For non transport events, the eventSubmissionTime will be used.
+
+
+
+        * all - No filtering is done. All events are returned.
+
+
+
+        If the eventFilter is not specified, the default is "all".  You may optionally specify a transportEquipmentId to return only results for the transport equipment with that ID.
+
+
+
+        The list of events are sorted on occurrence time if present, otherwise the submission time.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: queryTEEventsTEIdUsingGET
+      parameters:
+        - name: transportEquipmentId
+          in: path
+          description: Transport Equipment ID
+          required: true
+          schema:
+            type: string
+        - name: eventFilter
+          in: query
+          description: "{all | latest}"
+          required: false
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewAllEventsQueryResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  "/api/v1/transportEquipment/transportSummaries/consignmentId/{consignmentId}":
+    get:
+      tags:
+        - Transport Equipment Queries
+      summary:
+        "Get the transport summary for one or more pieces of transport equipment
+        "
+      description: >
+        Provide the consignmentId of a Consignment. Returns the transport
+        summary of all transport equipment associated with that consignment. 
+
+        Transport Plan Analysis: This endpoint will construct an up-to-date transport summary for each transport equipment returned by the query. This transport summary will include a list of transport plan events, ordered by the sequence in which they occur. Together these events indicate the series of locations that each transport equipment will move, or has moved, on its journey and everything that happened to it along the way.
+
+
+        Events are divided into three categories: planned, estimated and actual. Planned events provide the planned route of a transport equipment. Estimated events provide the estimated time things will occur to the transport equipment. Actual events indicate things that occurred to the transport equipment.
+
+
+        The event filter parameter can be used to control the processing done in the transport plan analysis.
+
+
+        * latest -  The transportPlanIssuanceTime8601 will be used to determine the most recent transport plan. All Actual events will be returned, no filtering is done. For Estimated events, the location, the eventSubmissionTime, the originatorId, and the fullStatus fields will be used to determine the most recent version of the event. Estimated events will be replaced by the corresponding Actual events. The resulting list will contain the Planned event (if there is one) followed by the Actual or Estimated (if not Actual).
+
+
+        * all - All the transport plans sent to this trade object will be returned, from most recent to oldest. Each transport plan will have a version, the transport plan issuance date, and the name of the organization that sent the plan, along with the list of Planned events.
+
+
+        Note that the only events returned by this endpoint are the set of events known as “transport”events. This does NOT include consignment, transport equipment, generic, or document events. For a complete list of transport events, see the Transport Events category in the Event Publish Swagger documentation. To get all events for a consignment or transport equipment, use the …/events/... endpoint.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: transportSummaryConsignmentIdUsingGET_1
+      parameters:
+        - name: consignmentId
+          in: path
+          description: Consignment ID
+          required: true
+          schema:
+            type: string
+        - name: eventFilter
+          in: query
+          description: "{all | latest}"
+          required: false
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionedTransportSummary"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  ? "/api/v1/transportEquipment/transportSummaries/splitFromConsignment/{consignmentId}"
+  : get:
+      tags:
+        - Transport Equipment Queries
+      summary:
+        Get the transport summary for one or more pieces of transport equipment
+        that were split from the consignment with the given consignment ID
+      description: >
+        Provide the consignmentId for a consignment. Returns the transport
+        summary for all of the transport equipment split from the consignment
+        that are not yet associated with another consignment. 
+
+        Transport Plan Analysis: This endpoint will construct an up-to-date transport summary for each transport equipment returned by the query. This transport summary will include a list of transport plan events, ordered by the sequence in which they occur. Together these events indicate the series of locations that each transport equipment will move, or has moved, on its journey and everything that happened to it along the way.
+
+
+        Events are divided into three categories: planned, estimated and actual. Planned events provide the planned route of a transport equipment. Estimated events provide the estimated time things will occur to the transport equipment. Actual events indicate things that occurred to the transport equipment.
+
+
+        The event filter parameter can be used to control the processing done in the transport plan analysis.
+
+
+        * latest -  The transportPlanIssuanceTime8601 will be used to determine the most recent transport plan. All Actual events will be returned, no filtering is done. For Estimated events, the location, the eventSubmissionTime, the originatorId, and the fullStatus fields will be used to determine the most recent version of the event. Estimated events will be replaced by the corresponding Actual events. The resulting list will contain the Planned event (if there is one) followed by the Actual or Estimated (if not Actual).
+
+
+        * all - All the transport plans sent to this transport equipment will be returned, from most recent to oldest. Each transport plan will have a version, the transport plan issuance date, and the name of the organization that sent the plan, along with the list of Planned events.
+
+
+        Note that the only events returned by this endpoint are the set of events known as “transport”events. This does NOT include consignment, transport equipment, generic, or document events.. For a complete list of transport events, see the Transport Events category in the Event Publish Swagger documentation. To get all events for a consignment or transport equipment, use the …/events/... endpoint.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: transportSummarySplitFromConsignmentByIDUsingGET
+      parameters:
+        - name: consignmentId
+          in: path
+          description: Consignment ID
+          required: true
+          schema:
+            type: string
+        - name: eventFilter
+          in: query
+          description: "{all | latest}"
+          required: false
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionedTransportSummary"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  ? "/api/v1/transportEquipment/transportSummaries/transportEquipmentId/{transportEquipmentId}"
+  : get:
+      tags:
+        - Transport Equipment Queries
+      summary: "Get the transport summary a transport equipment "
+      description: >
+        Provide the transport equipment ID of a transport equipment. Returns the
+        transport summary of the transport equipment with that ID. 
+
+        Transport Plan Analysis: This endpoint will construct an up-to-date transport summary for each transport equipment returned by the query. This transport summary will include a list of transport plan events, ordered by the sequence in which they occur. Together these events indicate the series of locations that each transport equipment will move, or has moved, on its journey and everything that happened to it along the way.
+
+
+        Events are divided into three categories: planned, estimated and actual. Planned events provide the planned route of a transport equipment. Estimated events provide the estimated time things will occur to the transport equipment. Actual events indicate things that occurred to the transport equipment.
+
+
+        The event filter parameter can be used to control the processing done in the transport plan analysis.
+
+
+        * latest -  The transportPlanIssuanceTime8601 will be used to determine the most recent transport plan. All Actual events will be returned, no filtering is done. For Estimated events, the location, the eventSubmissionTime, the originatorId, and the fullStatus fields will be used to determine the most recent version of the event. Estimated events will be replaced by the corresponding Actual events. The resulting list will contain the Planned event (if there is one) followed by the Actual or Estimated (if not Actual).
+
+
+        * all - All the transport plans sent to this transport equipment will be returned, from most recent to oldest. Each transport plan will have a version, the transport plan issuance date, and the name of the organization that sent the plan, along with the list of Planned events.
+
+
+        Note that the only events returned by this endpoint are the set of events known as “transport”events. This does NOT include consignment, transport equipment, generic, or document events. For a complete list of transport events, see the Transport Events category in the Event Publish Swagger documentation. To get all events for a consignment or transport equipment, use the …/events/... endpoint.
+
+
+        Commodity and originator information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of these correct types, then you may not have visibility to the following fields in each event:
+
+        Commodity information:
+
+        - harmonizedCodes
+
+        - bookingData.commodities.commodityDescription
+
+        - bookingData.commodities.commodityHarmonizedCode
+
+
+        Originator information:
+
+        - originatorName
+
+        - originatorId
+
+        - senderOrgId
+
+
+        In addition, The originator information on a Party Add/Update/Remove event will be hidden if you are not the org who submitted the event or one of the parties being added. The originator information and 'destinationOrgName' field on a Document event whose 'action' field is 'issued', 'transferred', or 'surrendered' will be hidden if you are not the org who submitted the event or the org that the document is being transferred to.
+      operationId: transportSummaryTEIdUsingGET
+      parameters:
+        - name: transportEquipmentId
+          in: path
+          description: Transport Equipment ID
+          required: true
+          schema:
+            type: string
+        - name: eventFilter
+          in: query
+          description: "{all | latest}"
+          required: false
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionedTransportSummary"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  /api/v1/unassociatedEvents:
+    get:
+      tags:
+        - Event Queries
+      summary: Fetch unassociated events
+      operationId: queryUnassociatedEventsUsingGET
+      parameters:
+        - name: size
+          in: query
+          description:
+            Optional, limit to apply to the individual queries for orphaned
+            events and homeless events, max 1000. Since this limit applies to
+            each category of "unassociated events" individually, using a size of
+            50 could result in at most 100 returned events (50 homeless events,
+            50 orphaned events).
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: from
+          in: query
+          description:
+            Optional, bookmark to get the next chunk of results to a previously
+            executed query. This must be the newFrom value from a previous
+            unassociated events query.
+          required: false
+          schema:
+            type: string
+        - name: eventTransactionId
+          in: query
+          description:
+            Optional, only include unassociated events that match this
+            eventTransactionId.
+          required: false
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          description: Optional, the field on which to order the results
+          required: false
+          schema:
+            type: string
+            enum:
+              - eventOccurrenceTime
+              - equipmentNumber
+              - carrierBookingNumber
+              - billOfLadingNumber
+        - name: sortOrder
+          in: query
+          description: Optional, the sort order to apply to sortBy field.
+          required: false
+          schema:
+            type: string
+            enum:
+              - ascending
+              - descending
+            default: ascending
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnassociatedEventsResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+  /api/v2/consignments:
+    get:
+      tags:
+        - Consignment Queries
+      summary: Query all consignments
+      description: >
+        Queries for all consignments visible to the user, filtered using the
+        criteria below.
+
+
+        We return up to a maximum of 1000 consignments in one query. Paging is used to retrieve consignments beyond this number. Provide the "newFrom" value from the response body as the "from" parameter to retrieve the next page of results. If "from" is given, all other parameters are ignored, except for "size".
+
+
+        For the fields listed below, wildcard matching is supported. A '*' can be used in place of one or more characters, and a '?' can replace a single character.
+
+        - exportCountry
+
+        - importCountry
+
+        - entryPort
+
+        - exitPort
+
+        - consignmentId
+
+        - references
+
+        - transportEquipmentId
+
+        - transportEquipmentReferences
+
+        - harmonizedCode
+
+        - billOfLadingNumber
+
+        - carrierBookingNumber
+
+        - originLocation
+
+        - destinationLocation
+
+        - terminal
+
+
+        Commodity information visibility is restricted to orgs that were onboarded with certain types. If your org does not have one of the correct types, then the following fields will be removed from all consignment response objects, and you will not be allowed to search on these fields:
+
+        - harmonizedCode
+
+        - commodityHarmonizedCode (in the commodities array in bookingData)
+
+        - commodityDescription (in the commodities array in bookingData)
+      operationId: queryConsignmentsUsingGET_1
+      parameters:
+        - name: size
+          in: query
+          description: Optional, number of consignments to return, max 1000
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: from
+          in: query
+          description:
+            Optional, bookmark to get the next chunk of results to a previously
+            executed query. This must be the newFrom value from a previous
+            consignments query.
+          required: false
+          schema:
+            type: string
+        - name: createdBy
+          in: query
+          description:
+            Optional, only include results that were created by any of the given
+            organizations
+          required: false
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: createdAfter
+          in: query
+          description:
+            Optional, only include results that were created on or after this
+            date. The date must be in epoch format.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: createdBefore
+          in: query
+          description:
+            Optional, only include results that were created on or before this
+            date. The date must be in epoch format.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: exportCountry
+          in: query
+          description: Optional, only include results that match this export country
+          required: false
+          schema:
+            type: string
+        - name: importCountry
+          in: query
+          description: Optional, only include results that match this import country
+          required: false
+          schema:
+            type: string
+        - name: entryPort
+          in: query
+          description: Optional, only include results that match this entry port
+          required: false
+          schema:
+            type: string
+        - name: exitPort
+          in: query
+          description: Optional, only include results that match this exit port
+          required: false
+          schema:
+            type: string
+        - name: consignmentId
+          in: query
+          description: Optional, only include results that match this consignment ID
+          required: false
+          schema:
+            type: string
+        - name: referenceType
+          in: query
+          description:
+            Optional, only include results that match this reference type for
+            the consignment.
+          required: false
+          schema:
+            type: string
+        - name: references
+          in: query
+          description:
+            Optional, only include results that match these references
+            number/code for the consignment.
+          required: false
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: status
+          in: query
+          description: Optional, only include results that match this consignment status
+          required: false
+          schema:
+            type: string
+        - name: transportEquipmentId
+          in: query
+          description:
+            Optional, only include results with a container that matches this
+            transport equipment ID
+          required: false
+          schema:
+            type: string
+        - name: transportEquipmentReferenceType
+          in: query
+          description:
+            Optional, only include results that match this transport equipment
+            reference type.
+          required: false
+          schema:
+            type: string
+        - name: transportEquipmentReferences
+          in: query
+          description:
+            Optional, only include results that match these trasport equipment
+            references number/code.
+          required: false
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: equipmentNumber
+          in: query
+          description:
+            Optional, only include results with a transport equipment that
+            matches this equipment number
+          required: false
+          schema:
+            type: string
+        - name: billOfLadingNumber
+          in: query
+          description: Optional, only include results that match this bill of lading number
+          required: false
+          schema:
+            type: string
+        - name: harmonizedCode
+          in: query
+          description:
+            Optional, only include results that match this harmonized system
+            code. Your org must have permission to see commodity information to
+            search on this parameter
+          required: false
+          schema:
+            type: string
+        - name: carrierBookingNumber
+          in: query
+          description: Optional, only include results that match this carrier booking number
+          required: false
+          schema:
+            type: string
+        - name: terminal
+          in: query
+          description: Optional, only include results that match this terminal name
+          required: false
+          schema:
+            type: string
+        - name: startPlannedVesselDeparture
+          in: query
+          description:
+            Optional, start date in Planned Vessel Departure date range. Only
+            include results where a consignment leaves the Exit Port (Planned
+            Vessel Departure) on this date or later. The date must be in epoch
+            milliseconds format. The value used will be this epoch day at time
+            00:00:01 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endPlannedVesselDeparture
+          in: query
+          description:
+            Optional, end date in Planned Vessel Departure date range. Only
+            include results where a consignment leaves the Exit Port (Planned
+            Vessel Departure) on this date or earlier. The date must be in epoch
+            milliseconds format. The value used will be this epoch day at time
+            23:59:59 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: startPlannedVesselArrival
+          in: query
+          description:
+            Optional, start date in Planned Vessel Arrival date range. Only
+            include results where a consignment arrives at the Entry Port
+            (Planned Vessel Arrival) on this date or later. The date must be in
+            epoch milliseconds format. The value used will be this epoch day at
+            time 00:00:01 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endPlannedVesselArrival
+          in: query
+          description:
+            Optional, end date in Planned Vessel Arrival date range. Only
+            include results where a consignment arrives at the Entry Port
+            (Planned Vessel Arrival) on this date or earlier. The date must be
+            in epoch milliseconds format. The value used will be this epoch day
+            at time 23:59:59 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: originLocation
+          in: query
+          description:
+            Optional, only include results that match the value of the origin
+            location. Searches for matches in the originLocation in the booking
+            data as well as the exit port
+          required: false
+          schema:
+            type: string
+        - name: destinationLocation
+          in: query
+          description:
+            Optional, only include results that match the value of the
+            destination location. Searches for matches in the
+            destinationLocation in the bookingData as well as the entry port
+          required: false
+          schema:
+            type: string
+        - name: startBookingDepartureDate
+          in: query
+          description:
+            Optional, start departure date in Booking . Only include results
+            where a consignment leaves the origin on this date or later. The
+            date must be in epoch milliseconds format. The value used will be
+            this epoch day at time 00:00:01 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endBookingDepartureDate
+          in: query
+          description:
+            Optional, end departure date in Booking. Only include results when a
+            consignment arrives at the destination on this date or earlier. The
+            date must be in epoch milliseconds format. The value used will be
+            this epoch day at time 23:59:59 HH:MM:SS
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: commodityHarmonizedCode
+          in: query
+          description:
+            Optional, only include results that match this commodity harmonized
+            system code. Your org must have permission to see commodity
+            information to search on this parameter
+          required: false
+          schema:
+            type: string
+        - name: commodityDescription
+          in: query
+          description: Optional, only include results that match this commodity
+            description. Your org must have permission to see commodity
+            information to search on this parameter
+          required: false
+          schema:
+            type: string
+        - name: vehicleName
+          in: query
+          description:
+            Optional, only include results that match this vehicleName in the
+            bookingData
+          required: false
+          schema:
+            type: string
+        - name: onWater
+          in: query
+          description:
+            Optional, only include results where the onWater field equals the
+            given value. OnWater is true if all the equipment for this
+            consignment have been loaded onto the vessel but none have been
+            discharged
+          required: false
+          schema:
+            type: boolean
+        - name: transshipment
+          in: query
+          description:
+            Optional, only include results where the transshipment field equals
+            the given value. Transhipment is true if two different vehicle IDs
+            are used in the vessel transport events sent to the consignment or
+            its equipment, indicating its equipment will be transferred between
+            vessels mid journey
+          required: false
+          schema:
+            type: boolean
+        - name: startChangeInVesselArrivalFromFirstPlan
+          in: query
+          description:
+            Optional, only include results where the plannedVesselArrival time
+            has changed from its earliest value by the given amount or more, in
+            milliseconds. A negative value for
+            changeInVesselArrivalFromFirstPlan indicates the consignment is
+            arriving earlier than expected, a positive value indicates the
+            consignment is arriving later
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endChangeInVesselArrivalFromFirstPlan
+          in: query
+          description:
+            Optional, only include results where the plannedVesselArrival time
+            has changed from its earliest value by the given amount or less, in
+            milliseconds. A negative value for
+            changeInVesselArrivalFromFirstPlan indicates the consignment is
+            arriving earlier than expected, a positive value indicates the
+            consignment is arriving later
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: startChangeInVesselArrivalFromFirstPlanDays
+          in: query
+          description:
+            Optional, only include results where the plannedVesselArrival time
+            has changed from its earliest value by the given amount or more, in
+            days. A negative value for changeInVesselArrivalFromFirstPlan
+            indicates the consignment is arriving earlier than expected, a
+            positive value indicates the consignment is arriving later
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endChangeInVesselArrivalFromFirstPlanDays
+          in: query
+          description:
+            Optional, only include results where the plannedVesselArrival time
+            has changed from its earliest value by the given amount or less, in
+            days. A negative value for changeInVesselArrivalFromFirstPlan
+            indicates the consignment is arriving earlier than expected, a
+            positive value indicates the consignment is arriving later
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: startLatestPlanIssuanceTime
+          in: query
+          description:
+            Optional, only include results where the latest set of planned
+            events sent to this consignment had a transportPlanIssuanceTime of
+            this time or later. Time in milliseconds since epoch. A user may
+            either use the latestPlanIssuedInLastNDays param or this param, not
+            both
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endLatestPlanIssuanceTime
+          in: query
+          description:
+            Optional, only include results where the latest set of planned
+            events sent to this consignment had a transportPlanIssuanceTime of
+            this time or earlier. Time in milliseconds since epoch. A user may
+            either use the latestPlanIssuedInLastNDays param or this param, not
+            both
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: latestPlanIssuedInLastNDays
+          in: query
+          description:
+            Optional, only include results where the transport plan for this
+            consignment was changed between now and n days ago. The consignment
+            must have received more than one complete transport plan for the
+            plan to have "changed". A user may not supply both this field and
+            any of startNumberPlansReceived, endNumberPlansReceived,
+            startLatestPlanIssuanceTime, endLatestPlanIssuanceTime, or
+            planChangedLastNDays
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: planChangedLastNDays
+          in: query
+          description:
+            Optional, only include results where the transport plan for this
+            consignment was changed between now and n days ago. The consignment
+            must have received more than one complete transport plan for the
+            plan to have "changed". A user may not supply both this field and
+            any of startNumberPlansReceived, endNumberPlansReceived,
+            startLatestPlanIssuanceTime, endLatestPlanIssuanceTime, or
+            latestPlanIssuedInLastNDays
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: startNumberPlansReceived
+          in: query
+          description:
+            Optional, only include consignments which have received at least
+            this many complete transport plans (inclusive)
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endNumberPlansReceived
+          in: query
+          description:
+            Optional, only include consignments which have received at most this
+            many complete transport plans (inclusive)
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: false
+          schema:
+            type: string
+            default: en
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsignmentQueryResponseV2"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitResponseModel"
+servers:
+  - url: //platform-sandbox.tradelens.com/
+components:
+  schemas:
+    TransportPlanResponse:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int32
+          description:
+            The version of the transport plan. A value of 0 means its the most
+            current version.
+        transportPlanIssuanceTime8601:
+          type: string
+          example: 2017-09-15T15:30:00.000-05:00
+          description:
+            A timestamp used to group planned events that make up a Transport
+            Plan, in common ISO 8601 format yyyy-MM-dd'T'HH:mm:ss.SSSZ . This
+            field must be set in every planned event in the transport plan for
+            the transport equipment to calculate a dynamic route using this
+            transport plan
+        senderOrgName:
+          type: string
+          example: ACME
+          description: The name of the organization that sent the transport plan
+        transportSummaryEvents:
+          type: array
+          description: The transport summary for a given Transport Equipment
+          items:
+            $ref: "#/components/schemas/ApiV1TransportSummaryEvent"
+    ForbiddenResponse:
+      type: object
+      required:
+        - message
+      properties:
+        code:
+          type: string
+          example: "403"
+          description: HTTP status code
+        message:
+          type: string
+          example: Request forbidden.
+          description: Message describing the status
+        timestamp:
+          type: string
+          example: 2020-09-13T23:30:52.123Z
+          description: time of error
+    BookingData:
+      type: object
+      required:
+        - destinationLocation
+        - originLocation
+        - transportEquipmentDetails
+      properties:
+        originLocation:
+          $ref: "#/components/schemas/Location"
+        destinationLocation:
+          $ref: "#/components/schemas/Location"
+        contractCarriageCondition:
+          type: string
+          description: Contract Carriage Condition
+          enum:
+            - SD_SD
+            - SD_CY
+            - CY_SD
+            - CY_CY
+        departureTime8601:
+          type: string
+          description: Departure date and time, in common ISO 8601 format
+            yyyy-MM-dd'T'HH:mm:ss.SSSZ
+        vehicleId:
+          type: string
+          description:
+            Vehicle ID. For vessels, Lloyd's IMO code expected. For trucks,
+            license plate expected.
+        vehicleName:
+          type: string
+          description: Name of truck, rail, barge, or vessel
+        voyageId:
+          type: string
+          description: Voyage Identifier
+        transportEquipmentDetails:
+          type: array
+          description: Transport Equipment details
+          items:
+            $ref: "#/components/schemas/TransportEquipmentDetails"
+        commodities:
+          type: array
+          description: List of Commodity descriptions
+          items:
+            $ref: "#/components/schemas/Commodity"
+    Address:
+      type: object
+      required:
+        - city
+        - country
+      properties:
+        address1:
+          type: string
+          example: 1234 Tradelens Ave
+          description: The first line of the street address.
+        address2:
+          type: string
+          example: Suite 1A
+          description: The second line of the street address.
+        city:
+          type: string
+          example: Raleigh
+          description: The name of the city.
+        country:
+          type: string
+          example: US
+          description:
+            The country identification provided in the 2 Alpha ISO 3166 country
+            code standard. The country codes are available in the Platform
+            Constants API
+        stateProvince:
+          type: string
+          example: NC
+          description:
+            The province or state identification, provided in the ISO 3166-2
+            standard.
+        zipPostal:
+          type: string
+          example: 27709-2195
+          description:
+            The zip or postal code used to identify a geographical area within a
+            country/region.
+    TransportEquipmentDetails:
+      type: object
+      required:
+        - equipmentQuantity
+      properties:
+        description:
+          type: string
+          example: Livestock carrier
+          description: Human readable equipment type
+        equipmentType:
+          type: string
+          example: 22T3
+          description: The equipment type based on ISO 6346
+        equipmentQuantity:
+          type: integer
+          format: int32
+          description: The quantity of transport equipment
+    SplitFromConsignment:
+      type: object
+      properties:
+        carrierBookingNumber:
+          type: string
+          example: "123456789"
+          description: The Carrier Booking Number
+        billOfLadingNumber:
+          type: string
+          example: DMKLLE0020217
+          description: Bill of Lading Number
+        consignmentId:
+          type: string
+          example: c93b1946-d8f7-11e7-9296-cec278b6b50a
+          description: Generated ID for the consignment
+    ConsignmentCreatorsResponse:
+      type: object
+      required:
+        - consignmentCreators
+      properties:
+        consignmentCreators:
+          type: array
+          description: Information about the organizations returned by the query.
+          items:
+            $ref: "#/components/schemas/TradeInstrumentCreator"
+    Port:
+      type: object
+      required:
+        - unLocode
+      properties:
+        unLocode:
+          type: string
+          example: NLRTM
+          description: UN/Locode for Port
+    TransportEquipmentSummary:
+      type: object
+      required:
+        - cargoTypes
+      properties:
+        transportEquipmentId:
+          type: string
+          example: 781as5-1790-4059-bhh1-2cc0fcd03532
+          description: The unique generated Id for the transport equipment
+        transportEquipmentRefs:
+          type: array
+          description: List of customer created references to this transport equipment
+          items:
+            type: string
+        billsOfLading:
+          type: array
+          example: BOL419328
+          description: The bills of lading number
+          items:
+            type: string
+        transportEquipmentTypes:
+          type: array
+          description: The types of the transport equipment
+          items:
+            $ref: "#/components/schemas/Equipment_Type_Response"
+        equipmentNumber:
+          type: string
+          example: "10193652010736"
+          description: The unique Id that is physically on the transport equipment
+        dangerousCargo:
+          type: boolean
+          example: true
+          description: Flag for dangerous cargo
+        cargoTypes:
+          type: array
+          description:
+            The harmonized codes of the type of cargo being shipped plus the
+            descriptions
+          items:
+            $ref: "#/components/schemas/Harmonized_Code_Response"
+        verifiedGrossMass:
+          type: string
+          example: 413kg
+          description: Verified gross mass
+        portOfEntry:
+          type: string
+          example: NLRTM
+          description: Port of Entry
+        portOfEntryDescription:
+          type: string
+          example: Rotterdam, ZH, NL
+          description: Port of Entry Description
+        portOfDischarge:
+          type: string
+          example: USNWK
+          description: Port of Discharge
+        portOfDischargeDescription:
+          type: string
+          example: Newark, DE, US
+          description: Port of Discharge Description
+        plannedVesselDeparture:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Planned Vessel Departure in epoch milliseconds
+        plannedVesselArrival:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Planned Vessel Arrival in epoch milliseconds
+        terminals:
+          type: array
+          description: Terminals
+          items:
+            type: string
+        terminalDescriptions:
+          type: array
+          description: Terminal Descriptions
+          items:
+            type: string
+        cutOffs:
+          type: array
+          description: Cutoffs
+          items:
+            $ref: "#/components/schemas/CutOff"
+        callerRoles:
+          type: array
+          description: The list of caller party roles
+          items:
+            type: string
+    ConsignmentSummary:
+      type: object
+      required:
+        - consignmentId
+      properties:
+        consignmentId:
+          type: string
+          example: 7ciusuhd-8r3y12r-dhf-84683-sdfhiy32
+          description: The unique identifier for a consignment
+        consignmentRefs:
+          type: array
+          description: The list of consignment references
+          items:
+            type: string
+        carrierBookingNumber:
+          type: string
+          description: The carrier booking number of the consignment
+        billOfLadingNumber:
+          type: string
+          description: The bill of lading number of the consignment
+        cutOffs:
+          type: array
+          description: Cutoffs
+          items:
+            $ref: "#/components/schemas/CutOff"
+        plannedVesselDeparture:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Consignment Planned Vessel Departure in epoch milliseconds
+        plannedVesselArrival:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Consignment Planned Vessel Arrival in epoch milliseconds
+        bookingData:
+          $ref: "#/components/schemas/BookingData"
+        cargoTypes:
+          type: array
+          description:
+            The harmonized codes of the type of cargo being shipped plus the
+            descriptions
+          items:
+            $ref: "#/components/schemas/Harmonized_Code_Response"
+    Document:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+          example: Document description
+          description: A description of the document passed by URI
+        platformDocumentVersion:
+          type: integer
+          format: int32
+        uri:
+          type: string
+          example: https://box.com/file/34534645765543
+          description: A URI pointing to a copy of the document
+        hash:
+          type: string
+          example: 67c53aa7ddf77389914e2e319abdd158c96a451e2436156bb78e62964aab0930
+          description: The hash code of the document referenced by the URI
+        hashEncodingType:
+          type: string
+          example: MD5
+          description: The algorithm used to generate the hash
+        platformDocumentId:
+          type: string
+          description:
+            "The ID of this document in Platform - used by Platform to
+            reconstruct the document URI. "
+    ShipmentEventsResponse:
+      type: object
+      properties:
+        events:
+          type: array
+          description: The list of events for the shipment with the provided shipmentId
+          items:
+            $ref: "#/components/schemas/Events"
+    VersionedTransportSummary:
+      type: object
+      required:
+        - transportEquipmentList
+      properties:
+        consignment:
+          $ref: "#/components/schemas/ConsignmentSummary"
+        transportEquipmentList:
+          type: array
+          description: The list of transport equipment that are associated with the query
+          items:
+            $ref: "#/components/schemas/TransportEquipmentResponse"
+    CutOff:
+      type: object
+      properties:
+        cutOffDateTime8601:
+          type: string
+          description: Deadline for the cut off, in common ISO 8601 format
+            yyyy-MM-dd'T'HH:mm:ss.SSSZ
+        cutOffType:
+          type: string
+          description: Type of cut off, e.g. Documentation, VGM, Cargo
+          enum:
+            - Cargo
+            - Documentation
+            - VGM
+        eventSubmissionTime:
+          type: integer
+          format: int64
+          description: The time the event creating the cutOff was submitted
+        eventTransactionId:
+          type: string
+          description: The event transaction ID of the event that created this cut off
+        location:
+          $ref: "#/components/schemas/Location"
+    UnassociatedEventsResponse:
+      type: object
+      required:
+        - newFrom
+        - size
+        - total
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of hits returned by the query
+        size:
+          type: integer
+          format: int32
+          description: Number of events in this result
+        orphanedEvents:
+          type: array
+          description: The list of orphaned events
+          items:
+            $ref: "#/components/schemas/Events"
+        homelessEvents:
+          type: array
+          description: The list of homeless events
+          items:
+            $ref: "#/components/schemas/Events"
+        newFrom:
+          type: string
+          description: Bookmark to use for retrieving more query results
+    TradeInstrumentIdsResponse:
+      type: object
+      required:
+        - tradeObjectIds
+      properties:
+        tradeObjectIds:
+          type: array
+          description: IDs of trade objects matching the query.
+          items:
+            $ref: "#/components/schemas/TradeInstrumentId"
+    TradeInstrumentIdsIdentifiers:
+      type: object
+      properties:
+        consignment:
+          $ref: "#/components/schemas/ConsignmentIdentifer"
+        transportEquipment:
+          $ref: "#/components/schemas/TransportEquipmentIdentifier"
+        shipment:
+          $ref: "#/components/schemas/ShipmentIdentifer"
+    DocReference:
+      type: object
+      properties:
+        referenceName:
+          type: string
+          example: billOfLadingNumber
+          description: Reference Name
+        referenceValue:
+          type: string
+          example: BOL8331939
+          description: Reference Value
+    CombinedConsignment:
+      type: object
+      properties:
+        billOfLadingNumber:
+          type: string
+        carrierBookingNumber:
+          type: string
+        consignmentId:
+          type: string
+    DescriptiveTradeInstrumentReference:
+      type: object
+      required:
+        - reference
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        reference:
+          type: string
+          example: myReference-1
+          description: A reference to this object
+        type:
+          type: string
+          example: proformaInvoiceNumber
+          description: Type of the reference
+    PartBillOf:
+      type: object
+      properties:
+        carrierBookingNumber:
+          type: string
+          example: "123456789"
+          description: The Carrier Booking Number
+        billOfLadingNumber:
+          type: string
+          example: DMKLLE0020217
+          description: Bill of Lading Number
+        consignmentId:
+          type: string
+          example: c93b1946-d8f7-11e7-9296-cec278b6b50a
+          description: Generated ID for the consignment
+    TradeInstrumentCreator:
+      type: object
+      required:
+        - orgName
+      properties:
+        orgName:
+          type: string
+          description: The name of the organization matching the query.
+    DocumentV2:
+      type: object
+      properties:
+        contentUrl:
+          type: string
+        description:
+          type: string
+        docId:
+          type: string
+        docReferences:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocReference"
+        docType:
+          type: string
+        docVersion:
+          type: integer
+          format: int32
+    Shipment:
+      type: object
+      required:
+        - references
+        - shipmentCreationTime
+        - shipmentId
+        - shipmentUpdateTime
+      properties:
+        shipmentId:
+          type: string
+          description: Service created identifier for this shipment
+        shipmentCreationTime:
+          type: integer
+          format: int64
+          description: Timestamp of when the shipment was created
+        shipmentUpdateTime:
+          type: integer
+          format: int64
+          description: Timestamp of when the shipment was most recently updated
+        references:
+          type: array
+          description: List of customer created references to this shipment
+          items:
+            $ref: "#/components/schemas/DescriptiveTradeInstrumentReference"
+        goodsDescription:
+          type: string
+          description: Description of the goods in this shipment
+        associatedConsignmentIds:
+          type: array
+          description: ConsignmentIds associated with this shipment
+          items:
+            type: string
+        plannedCompletionDate8601:
+          type: string
+          description:
+            Estimated date that the goods in the shipment will be finalized or
+            complete
+        plannedDeliveryDate8601:
+          type: string
+          description:
+            The last date which the receiving party has to take possession of
+            goods in the shipment
+    TradeInstrumentId:
+      type: object
+      required:
+        - creationTime
+        - relatedTradeInstrumentIds
+      properties:
+        consignmentId:
+          type: string
+          description: The ID of the consignment matching the query.
+        transportEquipmentId:
+          type: string
+          description: The ID of the transport equipment matching the query.
+        shipmentId:
+          type: string
+          description: The ID of the shipment matching the query.
+        relatedTradeInstrumentIds:
+          type: array
+          description:
+            Alternate unique identifiers that are associated with this trade
+            object.
+          items:
+            type: string
+        creationTime:
+          type: integer
+          format: int64
+          description:
+            Time (since epoch, in milliseconds) at which the trade object was
+            created.
+    ApiV1TransportSummaryEvent:
+      type: object
+      required:
+        - event
+        - sequence
+      properties:
+        sequence:
+          type: integer
+          format: int64
+          example: 1
+          description: Sequence number of this event
+        event:
+          $ref: "#/components/schemas/ApiV1TransportEvent"
+    GeoCoordinates:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: double
+          example: 40.693351
+          description: Latitude coordinate
+        longitude:
+          type: number
+          format: double
+          example: -74.147572
+          description: Longitude coordinate
+    FormerlyAssociatedTransportEquipment:
+      type: object
+      properties:
+        transportEquipmentId:
+          type: string
+          example: c93b1946-d8f7-11e7-9296-cec278b6b50a
+          description: Generated ID for the transport equipment
+    TransportEquipmentCPResponse:
+      type: object
+      properties:
+        transportEquipmentSummary:
+          $ref: "#/components/schemas/TransportEquipmentSummary"
+        transportPlanIssuanceTime8601:
+          type: string
+          example: 2017-09-15T15:30:00.000-05:00
+          description:
+            A timestamp used to group planned events that make up a Transport
+            Plan, in common ISO 8601 format yyyy-MM-dd'T'HH:mm:ss.SSSZ . This
+            field must be set in every planned event in the transport plan for
+            the transport equipment to calculate a dynamic route using this
+            transport plan
+        senderOrgName:
+          type: string
+          example: ACME
+          description: The name of the organization that sent the transport plan
+        sequenceOfLastActual:
+          type: integer
+          format: int64
+          example: ACME
+          description: The sequence number of the last actual event
+        currentProgressEvents:
+          type: array
+          description: The current progress for a given Transport Equipment
+          items:
+            $ref: "#/components/schemas/CurrentProgressEvent"
+    ConsignmentV2:
+      type: object
+      required:
+        - consignmentId
+        - createdBy
+        - creationTime
+        - onWater
+        - references
+        - status
+        - transshipment
+      properties:
+        consignmentId:
+          type: string
+          description: Service created identifier for this consignment
+        carrierBookingNumber:
+          type: string
+          description: Carrier booking number for this consignment
+        status:
+          type: string
+          description: Status of this consignment
+          enum:
+            - Active
+            - Canceled
+            - Combined
+        cutOffs:
+          type: array
+          description: Cutoffs for all transport equipments for this consignment.
+          items:
+            $ref: "#/components/schemas/CutOff"
+        transportEquipmentIds:
+          type: array
+          description: Affiliated transport equipments' IDs
+          items:
+            type: string
+        transportEquipmentRefs:
+          type: array
+          description: Affiliated transport equipments' reference numbers
+          items:
+            type: string
+        exportCountries:
+          type: array
+          description: Affiliated transport equipments' planned export countries
+          items:
+            type: string
+        importCountries:
+          type: array
+          description: Affiliated transport equipments' planned import countries
+          items:
+            type: string
+        entryPorts:
+          type: array
+          description: Affiliated transport equipments' planned entry ports
+          items:
+            type: string
+        exitPorts:
+          type: array
+          description: Affiliated transport equipments' planned exit ports
+          items:
+            type: string
+        harmonizedCodes:
+          type: array
+          description: Affiliated transport equipments' harmonized system codes
+          items:
+            type: string
+        billOfLadingNumbers:
+          type: array
+          description: Affiliated transport equipments' bill of lading numbers
+          items:
+            type: string
+        creationTime:
+          type: integer
+          format: int64
+          description: Time this consignment was created
+        terminals:
+          type: array
+          description: Affiliated transport equipments' planned terminals
+          items:
+            type: string
+        plannedVesselArrival:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description:
+            Planned Vessel Arrival at the Entry Port in epoch milliseconds. If
+            the consignment has already arrived at the entry port this will be
+            null. Based on the event occurrence time of the latest
+            estimatedVesselArrival event if they are available, or the latest
+            plannedVesselArrival event otherwise
+        plannedVesselDeparture:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description:
+            Planned Vessel Departure from the Exit Port in epoch milliseconds.
+            If the consignment has already left the exit port this will be null.
+            Based on the event occurrence time of the latest
+            estimatedVesselDeparture event if they are available, or the latest
+            plannedVesselDeparture event otherwise
+        eventCreationTime:
+          type: integer
+          format: int64
+          description: Submission time of the event that created the consignment
+        eventUpdateTime:
+          type: integer
+          format: int64
+          description:
+            Submission time of the event that most recently updated the
+            consignment
+        consignmentCreationTime:
+          type: integer
+          format: int64
+          description: Timestamp of when the consignment was created
+        consignmentUpdateTime:
+          type: integer
+          format: int64
+          description: Timestamp of when the consignment was most recently updated
+        bookingData:
+          $ref: "#/components/schemas/BookingData"
+        parentConsignmentIds:
+          type: array
+          description: ID of the parent consignment for which this consignment subcontracts
+          items:
+            type: string
+        subcontractIds:
+          type: array
+          description: IDs of the children consignments which subcontract this consignment
+          items:
+            type: string
+        callerRoles:
+          type: array
+          description: The list of caller party roles
+          items:
+            type: string
+        createdBy:
+          type: string
+          description: The organization name of the creator of the consignment
+        splitFromConsignment:
+          $ref: "#/components/schemas/SplitFromConsignment"
+        combinedIntoConsignment:
+          $ref: "#/components/schemas/CombinedConsignment"
+        combinedConsignments:
+          type: array
+          description:
+            The combined consignment information of consignments that were
+            combined into this one
+          items:
+            $ref: "#/components/schemas/CombinedConsignment"
+        formerlyAssociatedTransportEquipment:
+          type: array
+          description: Transport equipment in the system that was formerly associated
+          items:
+            $ref: "#/components/schemas/FormerlyAssociatedTransportEquipment"
+        references:
+          type: array
+          description: List of customer created references to this consignment
+          items:
+            $ref: "#/components/schemas/DescriptiveTradeInstrumentReference"
+        onWater:
+          type: boolean
+          example: false
+          description:
+            True if all equipment for this consignment have been loaded onto the
+            vessel and none have been offloaded, false otherwise.
+        transshipment:
+          type: boolean
+          example: false
+          description:
+            True if two different vehicle IDs are used in the vessel transport
+            events sent to the consignment or its equipment, indicating its
+            equipment will be transferred between vessels mid journey, false
+            otherwise. If the consignment has no TEs then this will be false
+        changeInVesselArrivalFromFirstPlan:
+          type: integer
+          format: int64
+          description:
+            Difference in current plannedVesselArrival (the planned time of
+            arrival at the entry port) from the plannedVesselArrival calculated
+            when this consignment first received a transport plan. If the
+            consignment has already arrived at the entry port, this value will
+            be the difference between the occurrence time of the
+            actualVesselArrival and the first plannedVesselArrival at the entry
+            port. If there is no planned vessel arrival, this field will be
+            null. Negative times indicate the vessel will arrive earlier than
+            first planned, positive times indicate it will arrive later
+        latestPlanIssuanceTime:
+          type: integer
+          format: int64
+          description:
+            transportPlanIssuanceTime on the latest set of planned events sent
+            to this consignment, in milliseconds since epoch. If no plan has
+            ever been sent to this consignment this field will be null
+        numberPlansReceived:
+          type: integer
+          format: int64
+          description:
+            Number of complete transport plans which have been sent to this
+            consignment
+        partBillOf:
+          $ref: "#/components/schemas/PartBillOf"
+    Seal:
+      type: object
+      required:
+        - sealNumber
+        - sealType
+      properties:
+        sealNumber:
+          type: string
+          example: SEAL736481273
+          description: Seal Identification Number
+        sealType:
+          type: string
+          example: Carrier
+          description: Seal Type
+          enum:
+            - Carrier
+            - Customs
+            - Shippers
+            - Agency
+            - Veterinary
+            - Electronic
+    ConsignmentResponse:
+      type: object
+      required:
+        - consignmentId
+      properties:
+        consignmentId:
+          type: string
+          example: 7ciusuhd-8r3y12r-dhf-84683-sdfhiy32
+          description: The unique identifier for a consignment
+        consignmentRefs:
+          type: array
+          description: The list of consignment references
+          items:
+            type: string
+        carrierBookingNumber:
+          type: string
+          description: The carrier booking number of the consignment
+        status:
+          type: string
+          description: The status of the consignment
+          enum:
+            - Active
+            - Canceled
+            - Combined
+        plannedVesselDeparture:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Consignment Planned Vessel Departure in epoch milliseconds
+        plannedVesselArrival:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Consignment Planned Vessel Arrival in epoch milliseconds
+        bookingData:
+          $ref: "#/components/schemas/BookingData"
+        callerRoles:
+          type: array
+          description: The list of caller party roles
+          items:
+            type: string
+        transportPlans:
+          type: array
+          description: The list of transport plans
+          items:
+            $ref: "#/components/schemas/TransportPlanResponse"
+    ShipmentQueryResponse:
+      type: object
+      required:
+        - newFrom
+        - shipments
+        - size
+        - total
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of hits returned by the query
+        size:
+          type: integer
+          format: int32
+          description: Number of shipments in this result
+        shipments:
+          type: array
+          description: The list of shipments
+          items:
+            $ref: "#/components/schemas/Shipment"
+        newFrom:
+          type: string
+          description: Bookmark to use for retrieving more query results
+    NotFoundResponse:
+      type: object
+      required:
+        - message
+      properties:
+        code:
+          type: string
+          example: "404"
+          description: HTTP status code
+        message:
+          type: string
+          example: Not Found.
+          description: Message describing the status
+        timestamp:
+          type: string
+          example: 2020-09-13T23:30:52.123Z
+          description: time of error
+    ShipmentIdentifer:
+      type: object
+      properties:
+        references:
+          type: array
+          items:
+            $ref: "#/components/schemas/TradeInstrumentReference"
+    NewAllEventsQueryResponse:
+      type: object
+      properties:
+        events:
+          type: array
+          description: The list of events for the consignment or transport equipment
+          items:
+            $ref: "#/components/schemas/Events"
+    TradeInstrumentReference:
+      type: object
+      required:
+        - reference
+      properties:
+        reference:
+          type: string
+          example: myReference-1
+          description: A reference to this object
+        type:
+          type: string
+          example: proformaInvoiceNumber
+          description: Type of the reference
+    Consignment:
+      type: object
+      required:
+        - consignmentId
+        - createdBy
+        - creationTime
+        - status
+      properties:
+        consignmentId:
+          type: string
+          description: Service created identifier for this consignment
+        carrierBookingNumber:
+          type: string
+          description: Carrier booking number for this consignment
+        consignmentRefs:
+          type: array
+          description: List of customer created references to this consignment.
+          items:
+            type: string
+        status:
+          type: string
+          description: Status of this consignment
+          enum:
+            - Active
+            - Canceled
+            - Combined
+        cutOffs:
+          type: array
+          description: Cutoffs for all transport equipments for this consignment.
+          items:
+            $ref: "#/components/schemas/CutOff"
+        transportEquipmentIds:
+          type: array
+          description: Affiliated transport equipments' IDs
+          items:
+            type: string
+        transportEquipmentRefs:
+          type: array
+          description: Affiliated transport equipments' reference numbers
+          items:
+            type: string
+        exportCountries:
+          type: array
+          description: Affiliated transport equipments' planned export countries
+          items:
+            type: string
+        importCountries:
+          type: array
+          description: Affiliated transport equipments' planned import countries
+          items:
+            type: string
+        entryPorts:
+          type: array
+          description: Affiliated transport equipments' planned entry ports
+          items:
+            type: string
+        exitPorts:
+          type: array
+          description: Affiliated transport equipments' planned exit ports
+          items:
+            type: string
+        harmonizedCodes:
+          type: array
+          description: Affiliated transport equipments' harmonized system codes
+          items:
+            type: string
+        billOfLadingNumbers:
+          type: array
+          description: Affiliated transport equipments' bill of lading numbers
+          items:
+            type: string
+        creationTime:
+          type: integer
+          format: int64
+          description: Time this consignment was created
+        terminals:
+          type: array
+          description: Affiliated transport equipments' planned terminals
+          items:
+            type: string
+        plannedVesselArrival:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Planned Vessel Arrival in epoch milliseconds
+        plannedVesselDeparture:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Planned Vessel Departure in epoch milliseconds
+        eventCreationTime:
+          type: integer
+          format: int64
+          description: Submission time of the event that created the consignment
+        eventUpdateTime:
+          type: integer
+          format: int64
+          description:
+            Submission time of the event that most recently updated the
+            consignment
+        consignmentCreationTime:
+          type: integer
+          format: int64
+          description: Timestamp of when the consignment was created
+        consignmentUpdateTime:
+          type: integer
+          format: int64
+          description: Timestamp of when the consignment was most recently updated
+        bookingData:
+          $ref: "#/components/schemas/BookingData"
+        parentConsignmentIds:
+          type: array
+          description: ID of the parent consignment for which this consignment subcontracts
+          items:
+            type: string
+        subcontractIds:
+          type: array
+          description: IDs of the children consignments which subcontract this consignment
+          items:
+            type: string
+        callerRoles:
+          type: array
+          description: The list of caller party roles
+          items:
+            type: string
+        createdBy:
+          type: string
+          description: The organization name of the creator of the consignment
+        splitFromConsignment:
+          $ref: "#/components/schemas/SplitFromConsignment"
+        combinedIntoConsignment:
+          $ref: "#/components/schemas/CombinedConsignment"
+        combinedConsignments:
+          type: array
+          description:
+            The combined consignment information of consignments that were
+            combined into this one
+          items:
+            $ref: "#/components/schemas/CombinedConsignment"
+        formerlyAssociatedTransportEquipment:
+          type: array
+          description: Transport equipment in the system that was formerly associated
+          items:
+            $ref: "#/components/schemas/FormerlyAssociatedTransportEquipment"
+        partBillOf:
+          $ref: "#/components/schemas/PartBillOf"
+    ConsignmentEventsResponse:
+      type: object
+      properties:
+        events:
+          type: array
+          description: The list of events for the consignment
+          items:
+            $ref: "#/components/schemas/Events"
+    Commodity:
+      type: object
+      required:
+        - commodityDescription
+        - itemNumber
+      properties:
+        itemNumber:
+          type: integer
+          format: int64
+          example: 1
+          description: Item Number
+        commodityDescription:
+          type: string
+          example: Coffee, Roasted, Not Decaffeinated
+          description: Commodity Description
+        commodityHarmonizedCode:
+          type: string
+          description: Commodity Harmonized Code
+        commodityQuantity:
+          type: integer
+          format: int64
+          description: Commodity Quantity
+        commodityWeight:
+          type: string
+          example: 100 Kg
+          description: Commodity Gross Weight. Specify units in Kg or Lb
+    Events:
+      type: object
+      required:
+        - eventSubmissionTime
+        - originatorId
+        - originatorName
+        - senderOrgName
+      properties:
+        action:
+          type: string
+          description: Field for actionable flows
+        billOfLadingNumber:
+          type: string
+          description: Bill of lading number
+        bookingData:
+          $ref: "#/components/schemas/BookingData"
+        cargoRemainingOnboardCountries:
+          type: array
+          description: Countries where the cargo has remained on board
+          items:
+            type: string
+            enum:
+              - AD
+              - AE
+              - AF
+              - AG
+              - AI
+              - AL
+              - AM
+              - AO
+              - AQ
+              - AR
+              - AS
+              - AT
+              - AU
+              - AW
+              - AX
+              - AZ
+              - BA
+              - BB
+              - BD
+              - BE
+              - BF
+              - BG
+              - BH
+              - BI
+              - BJ
+              - BL
+              - BM
+              - BN
+              - BO
+              - BQ
+              - BR
+              - BS
+              - BT
+              - BV
+              - BW
+              - BY
+              - BZ
+              - CA
+              - CC
+              - CD
+              - CF
+              - CG
+              - CH
+              - CI
+              - CK
+              - CL
+              - CM
+              - CN
+              - CO
+              - CR
+              - CU
+              - CV
+              - CW
+              - CX
+              - CY
+              - CZ
+              - DE
+              - DJ
+              - DK
+              - DM
+              - DO
+              - DZ
+              - EC
+              - EE
+              - EG
+              - EH
+              - ER
+              - ES
+              - ET
+              - FI
+              - FJ
+              - FK
+              - FM
+              - FO
+              - FR
+              - GA
+              - GB
+              - GD
+              - GE
+              - GF
+              - GG
+              - GH
+              - GI
+              - GL
+              - GM
+              - GN
+              - GP
+              - GQ
+              - GR
+              - GS
+              - GT
+              - GU
+              - GW
+              - GY
+              - HK
+              - HM
+              - HN
+              - HR
+              - HT
+              - HU
+              - ID
+              - IE
+              - IL
+              - IM
+              - IN
+              - IO
+              - IQ
+              - IR
+              - IS
+              - IT
+              - JE
+              - JM
+              - JO
+              - JP
+              - KE
+              - KG
+              - KH
+              - KI
+              - KM
+              - KN
+              - KP
+              - KR
+              - KW
+              - KY
+              - KZ
+              - LA
+              - LB
+              - LC
+              - LI
+              - LK
+              - LR
+              - LS
+              - LT
+              - LU
+              - LV
+              - LY
+              - MA
+              - MC
+              - MD
+              - ME
+              - MF
+              - MG
+              - MH
+              - MK
+              - ML
+              - MM
+              - MN
+              - MO
+              - MP
+              - MQ
+              - MR
+              - MS
+              - MT
+              - MU
+              - MV
+              - MW
+              - MX
+              - MY
+              - MZ
+              - NA
+              - NC
+              - NE
+              - NF
+              - NG
+              - NI
+              - NL
+              - NO
+              - NP
+              - NR
+              - NU
+              - NZ
+              - OM
+              - PA
+              - PE
+              - PF
+              - PG
+              - PH
+              - PK
+              - PL
+              - PM
+              - PN
+              - PR
+              - PS
+              - PT
+              - PW
+              - PY
+              - QA
+              - RE
+              - RO
+              - RS
+              - RU
+              - RW
+              - SA
+              - SB
+              - SC
+              - SD
+              - SE
+              - SG
+              - SH
+              - SI
+              - SJ
+              - SK
+              - SL
+              - SM
+              - SN
+              - SO
+              - SR
+              - SS
+              - ST
+              - SV
+              - SX
+              - SY
+              - SZ
+              - TC
+              - TD
+              - TF
+              - TG
+              - TH
+              - TJ
+              - TK
+              - TL
+              - TM
+              - TN
+              - TO
+              - TR
+              - TT
+              - TV
+              - TW
+              - TZ
+              - UA
+              - UG
+              - UM
+              - US
+              - UY
+              - UZ
+              - VA
+              - VC
+              - VE
+              - VG
+              - VI
+              - VN
+              - VU
+              - WF
+              - WS
+              - YE
+              - YT
+              - ZA
+              - ZM
+              - ZW
+              - OA
+              - OB
+              - OC
+              - OD
+              - OE
+              - OF
+              - OG
+              - OZ
+              - XA
+              - XB
+              - XC
+              - XD
+              - XE
+              - XF
+              - XG
+              - XH
+              - XI
+              - XJ
+              - XK
+              - XL
+              - XM
+              - XN
+              - XO
+              - XP
+              - XQ
+              - XR
+              - XS
+              - XT
+              - XU
+              - XV
+              - XW
+              - XX
+              - XY
+              - XZ
+        carrierBookingNumber:
+          type: string
+          description: Carrier Booking number
+        certificateType:
+          type: string
+          description: Certificate type
+        consigneeId:
+          type: string
+          description: Consignee id
+        consigneeIdType:
+          type: string
+          description: Consignee type
+        consignmentId:
+          type: string
+          description: Generated ID for the consignment.
+        consignmentRef:
+          type: string
+          description: Reference to an existing consignment.
+        correlationId:
+          type: string
+          description: User-supplied ID for this event
+        dangerousGoodsType:
+          type: string
+          description: Dangerous goods type
+        data:
+          type: array
+          description: The event data
+          items:
+            $ref: "#/components/schemas/Data"
+        destinationOrgName:
+          type: string
+          description:
+            Org Name identifying who this document is being transferred to, if
+            this is a Document event with the action 'transferred' or
+            'surrendered'
+        doc:
+          $ref: "#/components/schemas/DocumentV2"
+        document:
+          $ref: "#/components/schemas/Document"
+        documentId:
+          type: string
+          description: Internal document identifier
+        documentType:
+          type: string
+          description: Document Type
+        documentVersion:
+          type: integer
+          format: int32
+          description: The version of the document
+        documents:
+          type: array
+          description: Internal documents list
+          items:
+            $ref: "#/components/schemas/Document"
+        eBLProvider:
+          type: string
+          description: Electronic Bill of Lading Provider
+        entryPort:
+          $ref: "#/components/schemas/Port"
+        equipmentNumber:
+          type: string
+          description: The unique identifier found on the transport equipment.
+        equipmentType:
+          type: string
+          description: The container Type based on ISO size type
+        eventName:
+          type: string
+          description: Event Name
+        eventOccurrenceTime:
+          type: integer
+          format: int64
+          description: When the event occurred, as the number of milliseconds since Epoch
+        eventOccurrenceTime8601:
+          type: string
+          description: When the event occurred, in common ISO 8601 format
+            yyyy-MM-dd'T'HH:mm:ss.SSSZ.
+        eventPriority:
+          type: integer
+          format: int32
+          description: Event Priority
+        eventSubmissionGpsLocation:
+          type: string
+          description:
+            GPS coordinates of where the event originated from (mobile device
+            only)
+        eventSubmissionTime:
+          type: integer
+          format: int64
+          description: Time of submission
+        eventTransactionId:
+          type: string
+          description: The unique ID for the event
+        eventType:
+          type: string
+          description: Event Type
+        exitPort:
+          $ref: "#/components/schemas/Port"
+        firstPortOfEntryCountry:
+          type: string
+          description: The first port of entry country
+          enum:
+            - AD
+            - AE
+            - AF
+            - AG
+            - AI
+            - AL
+            - AM
+            - AO
+            - AQ
+            - AR
+            - AS
+            - AT
+            - AU
+            - AW
+            - AX
+            - AZ
+            - BA
+            - BB
+            - BD
+            - BE
+            - BF
+            - BG
+            - BH
+            - BI
+            - BJ
+            - BL
+            - BM
+            - BN
+            - BO
+            - BQ
+            - BR
+            - BS
+            - BT
+            - BV
+            - BW
+            - BY
+            - BZ
+            - CA
+            - CC
+            - CD
+            - CF
+            - CG
+            - CH
+            - CI
+            - CK
+            - CL
+            - CM
+            - CN
+            - CO
+            - CR
+            - CU
+            - CV
+            - CW
+            - CX
+            - CY
+            - CZ
+            - DE
+            - DJ
+            - DK
+            - DM
+            - DO
+            - DZ
+            - EC
+            - EE
+            - EG
+            - EH
+            - ER
+            - ES
+            - ET
+            - FI
+            - FJ
+            - FK
+            - FM
+            - FO
+            - FR
+            - GA
+            - GB
+            - GD
+            - GE
+            - GF
+            - GG
+            - GH
+            - GI
+            - GL
+            - GM
+            - GN
+            - GP
+            - GQ
+            - GR
+            - GS
+            - GT
+            - GU
+            - GW
+            - GY
+            - HK
+            - HM
+            - HN
+            - HR
+            - HT
+            - HU
+            - ID
+            - IE
+            - IL
+            - IM
+            - IN
+            - IO
+            - IQ
+            - IR
+            - IS
+            - IT
+            - JE
+            - JM
+            - JO
+            - JP
+            - KE
+            - KG
+            - KH
+            - KI
+            - KM
+            - KN
+            - KP
+            - KR
+            - KW
+            - KY
+            - KZ
+            - LA
+            - LB
+            - LC
+            - LI
+            - LK
+            - LR
+            - LS
+            - LT
+            - LU
+            - LV
+            - LY
+            - MA
+            - MC
+            - MD
+            - ME
+            - MF
+            - MG
+            - MH
+            - MK
+            - ML
+            - MM
+            - MN
+            - MO
+            - MP
+            - MQ
+            - MR
+            - MS
+            - MT
+            - MU
+            - MV
+            - MW
+            - MX
+            - MY
+            - MZ
+            - NA
+            - NC
+            - NE
+            - NF
+            - NG
+            - NI
+            - NL
+            - NO
+            - NP
+            - NR
+            - NU
+            - NZ
+            - OM
+            - PA
+            - PE
+            - PF
+            - PG
+            - PH
+            - PK
+            - PL
+            - PM
+            - PN
+            - PR
+            - PS
+            - PT
+            - PW
+            - PY
+            - QA
+            - RE
+            - RO
+            - RS
+            - RU
+            - RW
+            - SA
+            - SB
+            - SC
+            - SD
+            - SE
+            - SG
+            - SH
+            - SI
+            - SJ
+            - SK
+            - SL
+            - SM
+            - SN
+            - SO
+            - SR
+            - SS
+            - ST
+            - SV
+            - SX
+            - SY
+            - SZ
+            - TC
+            - TD
+            - TF
+            - TG
+            - TH
+            - TJ
+            - TK
+            - TL
+            - TM
+            - TN
+            - TO
+            - TR
+            - TT
+            - TV
+            - TW
+            - TZ
+            - UA
+            - UG
+            - UM
+            - US
+            - UY
+            - UZ
+            - VA
+            - VC
+            - VE
+            - VG
+            - VI
+            - VN
+            - VU
+            - WF
+            - WS
+            - YE
+            - YT
+            - ZA
+            - ZM
+            - ZW
+            - OA
+            - OB
+            - OC
+            - OD
+            - OE
+            - OF
+            - OG
+            - OZ
+            - XA
+            - XB
+            - XC
+            - XD
+            - XE
+            - XF
+            - XG
+            - XH
+            - XI
+            - XJ
+            - XK
+            - XL
+            - XM
+            - XN
+            - XO
+            - XP
+            - XQ
+            - XR
+            - XS
+            - XT
+            - XU
+            - XV
+            - XW
+            - XX
+            - XY
+            - XZ
+        fullStatus:
+          type: string
+          description: Is the container full or empty
+          enum:
+            - Full
+            - Empty
+        harmonizedCodes:
+          type: array
+          description: Harmonized System 6 Code
+          items:
+            type: string
+        location:
+          $ref: "#/components/schemas/Location"
+        netWeight:
+          type: string
+          description: Net weight (including unit of measurement)
+        newSlotNumber:
+          type: string
+          description: New Slot Number
+        operatorCode:
+          type: string
+          description: Typical SCAC code
+        operatorName:
+          type: string
+          description: Operator name
+        originatorId:
+          type: string
+          description: The Originator ID
+        originatorName:
+          type: string
+          description: The Originator Name
+        packingListNumber:
+          type: string
+          description: Packing List Number
+        partBill:
+          type: boolean
+          example: false
+          description: Whether or not the event pertains to a "part bill of lading"
+        partBillOf:
+          $ref: "#/components/schemas/PartBillOf"
+        reasonCode:
+          type: string
+          description: Reason Code
+        reasonForSurvey:
+          type: string
+          description: Reason for survey
+        references:
+          type: array
+          description: List of customer created references to this trade object
+          items:
+            $ref: "#/components/schemas/TradeInstrumentReference"
+        sealNumber:
+          type: string
+          description: Seal number
+        sealType:
+          type: string
+          description: Seal type
+          enum:
+            - Carrier
+            - Customs
+            - Shippers
+            - Agency
+            - Veterinary
+            - Electronic
+        seals:
+          type: array
+          description: Seals
+          items:
+            $ref: "#/components/schemas/Seal"
+        senderOrgName:
+          type: string
+          description: The name of the organization that sent the event
+        shipperId:
+          type: string
+          description: Shipper id
+        shipperIdType:
+          type: string
+          description: Shipper id type
+        splitFromConsignment:
+          $ref: "#/components/schemas/SplitFromConsignment"
+        terminal:
+          $ref: "#/components/schemas/Terminal"
+        terminalDescription:
+          type: string
+          example: Rotterdam, ZH, NL
+          description: The description of the terminal which this consignment is touching
+        transitExportCountries:
+          type: array
+          description:
+            Export countries where a transport equipment has moved across
+            international borders to another country over land
+          items:
+            type: string
+            enum:
+              - AD
+              - AE
+              - AF
+              - AG
+              - AI
+              - AL
+              - AM
+              - AO
+              - AQ
+              - AR
+              - AS
+              - AT
+              - AU
+              - AW
+              - AX
+              - AZ
+              - BA
+              - BB
+              - BD
+              - BE
+              - BF
+              - BG
+              - BH
+              - BI
+              - BJ
+              - BL
+              - BM
+              - BN
+              - BO
+              - BQ
+              - BR
+              - BS
+              - BT
+              - BV
+              - BW
+              - BY
+              - BZ
+              - CA
+              - CC
+              - CD
+              - CF
+              - CG
+              - CH
+              - CI
+              - CK
+              - CL
+              - CM
+              - CN
+              - CO
+              - CR
+              - CU
+              - CV
+              - CW
+              - CX
+              - CY
+              - CZ
+              - DE
+              - DJ
+              - DK
+              - DM
+              - DO
+              - DZ
+              - EC
+              - EE
+              - EG
+              - EH
+              - ER
+              - ES
+              - ET
+              - FI
+              - FJ
+              - FK
+              - FM
+              - FO
+              - FR
+              - GA
+              - GB
+              - GD
+              - GE
+              - GF
+              - GG
+              - GH
+              - GI
+              - GL
+              - GM
+              - GN
+              - GP
+              - GQ
+              - GR
+              - GS
+              - GT
+              - GU
+              - GW
+              - GY
+              - HK
+              - HM
+              - HN
+              - HR
+              - HT
+              - HU
+              - ID
+              - IE
+              - IL
+              - IM
+              - IN
+              - IO
+              - IQ
+              - IR
+              - IS
+              - IT
+              - JE
+              - JM
+              - JO
+              - JP
+              - KE
+              - KG
+              - KH
+              - KI
+              - KM
+              - KN
+              - KP
+              - KR
+              - KW
+              - KY
+              - KZ
+              - LA
+              - LB
+              - LC
+              - LI
+              - LK
+              - LR
+              - LS
+              - LT
+              - LU
+              - LV
+              - LY
+              - MA
+              - MC
+              - MD
+              - ME
+              - MF
+              - MG
+              - MH
+              - MK
+              - ML
+              - MM
+              - MN
+              - MO
+              - MP
+              - MQ
+              - MR
+              - MS
+              - MT
+              - MU
+              - MV
+              - MW
+              - MX
+              - MY
+              - MZ
+              - NA
+              - NC
+              - NE
+              - NF
+              - NG
+              - NI
+              - NL
+              - NO
+              - NP
+              - NR
+              - NU
+              - NZ
+              - OM
+              - PA
+              - PE
+              - PF
+              - PG
+              - PH
+              - PK
+              - PL
+              - PM
+              - PN
+              - PR
+              - PS
+              - PT
+              - PW
+              - PY
+              - QA
+              - RE
+              - RO
+              - RS
+              - RU
+              - RW
+              - SA
+              - SB
+              - SC
+              - SD
+              - SE
+              - SG
+              - SH
+              - SI
+              - SJ
+              - SK
+              - SL
+              - SM
+              - SN
+              - SO
+              - SR
+              - SS
+              - ST
+              - SV
+              - SX
+              - SY
+              - SZ
+              - TC
+              - TD
+              - TF
+              - TG
+              - TH
+              - TJ
+              - TK
+              - TL
+              - TM
+              - TN
+              - TO
+              - TR
+              - TT
+              - TV
+              - TW
+              - TZ
+              - UA
+              - UG
+              - UM
+              - US
+              - UY
+              - UZ
+              - VA
+              - VC
+              - VE
+              - VG
+              - VI
+              - VN
+              - VU
+              - WF
+              - WS
+              - YE
+              - YT
+              - ZA
+              - ZM
+              - ZW
+              - OA
+              - OB
+              - OC
+              - OD
+              - OE
+              - OF
+              - OG
+              - OZ
+              - XA
+              - XB
+              - XC
+              - XD
+              - XE
+              - XF
+              - XG
+              - XH
+              - XI
+              - XJ
+              - XK
+              - XL
+              - XM
+              - XN
+              - XO
+              - XP
+              - XQ
+              - XR
+              - XS
+              - XT
+              - XU
+              - XV
+              - XW
+              - XX
+              - XY
+              - XZ
+        transitImportCountries:
+          type: array
+          description:
+            Import countries where a transport equipment has moved across
+            international borders to another country over land
+          items:
+            type: string
+            enum:
+              - AD
+              - AE
+              - AF
+              - AG
+              - AI
+              - AL
+              - AM
+              - AO
+              - AQ
+              - AR
+              - AS
+              - AT
+              - AU
+              - AW
+              - AX
+              - AZ
+              - BA
+              - BB
+              - BD
+              - BE
+              - BF
+              - BG
+              - BH
+              - BI
+              - BJ
+              - BL
+              - BM
+              - BN
+              - BO
+              - BQ
+              - BR
+              - BS
+              - BT
+              - BV
+              - BW
+              - BY
+              - BZ
+              - CA
+              - CC
+              - CD
+              - CF
+              - CG
+              - CH
+              - CI
+              - CK
+              - CL
+              - CM
+              - CN
+              - CO
+              - CR
+              - CU
+              - CV
+              - CW
+              - CX
+              - CY
+              - CZ
+              - DE
+              - DJ
+              - DK
+              - DM
+              - DO
+              - DZ
+              - EC
+              - EE
+              - EG
+              - EH
+              - ER
+              - ES
+              - ET
+              - FI
+              - FJ
+              - FK
+              - FM
+              - FO
+              - FR
+              - GA
+              - GB
+              - GD
+              - GE
+              - GF
+              - GG
+              - GH
+              - GI
+              - GL
+              - GM
+              - GN
+              - GP
+              - GQ
+              - GR
+              - GS
+              - GT
+              - GU
+              - GW
+              - GY
+              - HK
+              - HM
+              - HN
+              - HR
+              - HT
+              - HU
+              - ID
+              - IE
+              - IL
+              - IM
+              - IN
+              - IO
+              - IQ
+              - IR
+              - IS
+              - IT
+              - JE
+              - JM
+              - JO
+              - JP
+              - KE
+              - KG
+              - KH
+              - KI
+              - KM
+              - KN
+              - KP
+              - KR
+              - KW
+              - KY
+              - KZ
+              - LA
+              - LB
+              - LC
+              - LI
+              - LK
+              - LR
+              - LS
+              - LT
+              - LU
+              - LV
+              - LY
+              - MA
+              - MC
+              - MD
+              - ME
+              - MF
+              - MG
+              - MH
+              - MK
+              - ML
+              - MM
+              - MN
+              - MO
+              - MP
+              - MQ
+              - MR
+              - MS
+              - MT
+              - MU
+              - MV
+              - MW
+              - MX
+              - MY
+              - MZ
+              - NA
+              - NC
+              - NE
+              - NF
+              - NG
+              - NI
+              - NL
+              - NO
+              - NP
+              - NR
+              - NU
+              - NZ
+              - OM
+              - PA
+              - PE
+              - PF
+              - PG
+              - PH
+              - PK
+              - PL
+              - PM
+              - PN
+              - PR
+              - PS
+              - PT
+              - PW
+              - PY
+              - QA
+              - RE
+              - RO
+              - RS
+              - RU
+              - RW
+              - SA
+              - SB
+              - SC
+              - SD
+              - SE
+              - SG
+              - SH
+              - SI
+              - SJ
+              - SK
+              - SL
+              - SM
+              - SN
+              - SO
+              - SR
+              - SS
+              - ST
+              - SV
+              - SX
+              - SY
+              - SZ
+              - TC
+              - TD
+              - TF
+              - TG
+              - TH
+              - TJ
+              - TK
+              - TL
+              - TM
+              - TN
+              - TO
+              - TR
+              - TT
+              - TV
+              - TW
+              - TZ
+              - UA
+              - UG
+              - UM
+              - US
+              - UY
+              - UZ
+              - VA
+              - VC
+              - VE
+              - VG
+              - VI
+              - VN
+              - VU
+              - WF
+              - WS
+              - YE
+              - YT
+              - ZA
+              - ZM
+              - ZW
+              - OA
+              - OB
+              - OC
+              - OD
+              - OE
+              - OF
+              - OG
+              - OZ
+              - XA
+              - XB
+              - XC
+              - XD
+              - XE
+              - XF
+              - XG
+              - XH
+              - XI
+              - XJ
+              - XK
+              - XL
+              - XM
+              - XN
+              - XO
+              - XP
+              - XQ
+              - XR
+              - XS
+              - XT
+              - XU
+              - XV
+              - XW
+              - XX
+              - XY
+              - XZ
+        transportEquipmentId:
+          type: string
+          description: Generated ID for the transport equipment.
+        transportEquipmentRef:
+          type: string
+          description:
+            Reference to an existing transport equipment.  Value should be very
+            unique and created by a user.
+        transportPlanIssuanceTime8601:
+          type: string
+          description:
+            A timestamp used to group planned events that make up a Transport
+            Plan, in common ISO 8601 format yyyy-MM-dd'T'HH:mm:ss.SSSZ.
+        transportationPhase:
+          type: string
+          description: The transportation phase
+          enum:
+            - Import
+            - Export
+            - Transshipment
+            - Domestic
+        transshipmentPortDescriptions:
+          type: array
+          description:
+            Descriptions of ports where off loading the transport equipment from
+            one vessel at an intermediate destination and loading onto another
+            vessel to be further carried to the final port of discharge
+          items:
+            type: string
+        transshipmentPorts:
+          type: array
+          description:
+            Ports where off loading the transport equipment from one vessel at
+            an intermediate destination and loading onto another vessel to be
+            further carried to the final port of discharge
+          items:
+            $ref: "#/components/schemas/Port"
+        vehicleId:
+          type: string
+          description: ID of truck, rail, barge, or vessel
+        vehicleName:
+          type: string
+          description: Name of truck, rail, barge, or vessel
+        verifiedGrossMass:
+          type: string
+          description: Verified Gross Mass (VGM)
+        voyageId:
+          type: string
+          description: Voyage number
+        waypointId:
+          type: string
+          description: Waypoint ID
+    ConsignmentIdentifer:
+      type: object
+      properties:
+        carrierBookingNumber:
+          type: string
+          example: "123456789"
+          description: The carrier booking number to search with
+        billOfLadingNumber:
+          type: string
+          example: BOL8331939
+          description: The bill of lading number to search with
+        references:
+          type: array
+          items:
+            $ref: "#/components/schemas/TradeInstrumentReference"
+    TransportEquipmentIdentifier:
+      type: object
+      properties:
+        equipmentNumber:
+          type: string
+          example: ACME1122334
+          description: The transport equipment number to search with
+        carrierBookingNumber:
+          type: string
+          example: "123456789"
+          description: The carrier booking number to search with
+        billOfLadingNumber:
+          type: string
+          example: BOL8331939
+          description: The bill of lading number to search with
+        references:
+          type: array
+          items:
+            $ref: "#/components/schemas/TradeInstrumentReference"
+    ApiV1TransportEvent:
+      type: object
+      required:
+        - eventSubmissionTime
+        - originatorId
+        - originatorName
+        - senderOrgName
+      properties:
+        consignmentId:
+          type: string
+          description: Generated ID for the consignment.
+        consignmentRef:
+          type: string
+          description: Reference to an existing consignment.
+        correlationId:
+          type: string
+          description: User-supplied ID for this event
+        equipmentNumber:
+          type: string
+          description: The unique identifier found on the transport equipment.
+        eventName:
+          type: string
+          description: Event Name
+        eventOccurrenceTime:
+          type: integer
+          format: int64
+          description: When the event occurred, as the number of milliseconds since Epoch
+        eventOccurrenceTime8601:
+          type: string
+          description: When the event occurred, in common ISO 8601 format
+            yyyy-MM-dd'T'HH:mm:ss.SSSZ.
+        eventPriority:
+          type: integer
+          format: int32
+          description: Event Priority
+        eventSubmissionGpsLocation:
+          type: string
+          description:
+            GPS coordinates of where the event originated from (mobile device
+            only)
+        eventSubmissionTime:
+          type: integer
+          format: int64
+          description: Time of submission
+        eventTransactionId:
+          type: string
+          description: The unique ID for the event
+        eventType:
+          type: string
+          description: Event Type
+        fullStatus:
+          type: string
+          description: Is the container full or empty
+          enum:
+            - Full
+            - Empty
+        location:
+          $ref: "#/components/schemas/Location"
+        originatorId:
+          type: string
+          description: The Originator ID
+        originatorName:
+          type: string
+          description: The Originator Name
+        senderOrgName:
+          type: string
+          description: The name of the organization that sent the event
+        transportEquipmentId:
+          type: string
+          description: Generated ID for the transport equipment.
+        transportEquipmentRef:
+          type: string
+          description:
+            Reference to an existing transport equipment.  Value should be very
+            unique and created by a user.
+        transportPlanIssuanceTime8601:
+          type: string
+          description:
+            A timestamp used to group planned events that make up a Transport
+            Plan, in common ISO 8601 format yyyy-MM-dd'T'HH:mm:ss.SSSZ.
+        transportationPhase:
+          type: string
+          description: The transportation phase
+          enum:
+            - Import
+            - Export
+            - Transshipment
+            - Domestic
+        vehicleId:
+          type: string
+          description: ID of truck, rail, barge, or vessel
+        vehicleName:
+          type: string
+          description: Name of truck, rail, barge, or vessel
+        voyageId:
+          type: string
+          description: Voyage number
+    Data:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - Barge
+            - Bill of Lading Number
+            - Booking Number
+            - Container Type Size
+            - Date and Time
+            - Duns Number
+            - Event Name
+            - MRN Number
+            - Phyto Number
+            - Rail
+            - Truck
+            - Vessel
+            - Weight
+            - Booking Confirmation
+            - Proof of Ready
+            - Certificate of Origin
+            - Inspection Type
+            - Reason
+            - New Transport Owner
+            - Survey result
+            - Survey report
+            - Reason for survey
+            - HTS Code, Schedule B
+            - Reason for split
+            - Temperature
+            - Agency Seal
+            - Carrier Seal
+            - Customs Seal
+            - Veterinary Seal
+            - Electronic Seal
+            - Shippers Own Seal
+            - Partner Role
+            - Container Type
+            - Cargo Type
+        value:
+          type: string
+    ShipmentCreatorsResponse:
+      type: object
+      required:
+        - shipmentCreators
+      properties:
+        shipmentCreators:
+          type: array
+          description: Information about the organizations returned by the query.
+          items:
+            $ref: "#/components/schemas/TradeInstrumentCreator"
+    Terminal:
+      type: object
+      required:
+        - unLocode
+      properties:
+        unLocode:
+          type: string
+          example: NLRTM+11+RULED:139:6+PLP:72:306
+          description: UN/Locode for Terminal
+    ConsignmentQueryResponseV2:
+      type: object
+      required:
+        - consignments
+        - newFrom
+        - size
+        - total
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of hits returned by the query
+        size:
+          type: integer
+          format: int32
+          description: Number of consignments in this result
+        consignments:
+          type: array
+          description: The list of consignments
+          items:
+            $ref: "#/components/schemas/ConsignmentV2"
+        newFrom:
+          type: string
+          description: Bookmark to use for retrieving more query results
+    RateLimitResponseModel:
+      type: object
+      required:
+        - error
+        - message
+        - path
+        - status
+        - timestamp
+      properties:
+        error:
+          type: string
+          example: Too Many Requests
+          description: Human readable http response
+        message:
+          type: string
+          example: Request rate exceeded.
+          description: Translated error message
+        path:
+          type: string
+          example: /api/v1/path/to/endpoint
+          description: Path to API called
+        status:
+          type: integer
+          format: int32
+          example: 429
+          description: HTTP status (429)
+        timestamp:
+          type: integer
+          format: int64
+          example: 1583434912493
+          description: Timestamp at which the rejected request was submitted, in epoch time
+    ConsignmentQueryResponse:
+      type: object
+      required:
+        - consignments
+        - newFrom
+        - size
+        - total
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of hits returned by the query
+        size:
+          type: integer
+          format: int32
+          description: Number of consignments in this result
+        consignments:
+          type: array
+          description: The list of consignments
+          items:
+            $ref: "#/components/schemas/Consignment"
+        newFrom:
+          type: string
+          description: Bookmark to use for retrieving more query results
+    TransportEquipmentResponse:
+      type: object
+      required:
+        - cargoTypes
+      properties:
+        transportEquipmentId:
+          type: string
+          example: 781as5-1790-4059-bhh1-2cc0fcd03532
+          description: The unique generated Id for the transport equipment
+        transportEquipmentRefs:
+          type: array
+          description: List of customer created references to this transport equipment
+          items:
+            type: string
+        billsOfLading:
+          type: array
+          example: BOL419328
+          description: The bills of lading number
+          items:
+            type: string
+        transportEquipmentTypes:
+          type: array
+          description: The types of the transport equipment
+          items:
+            $ref: "#/components/schemas/Equipment_Type_Response"
+        equipmentNumber:
+          type: string
+          example: "10193652010736"
+          description: The unique Id that is physically on the transport equipment
+        dangerousCargo:
+          type: boolean
+          example: true
+          description: Flag for dangerous cargo
+        cargoTypes:
+          type: array
+          description:
+            The harmonized codes of the type of cargo being shipped plus the
+            descriptions
+          items:
+            $ref: "#/components/schemas/Harmonized_Code_Response"
+        verifiedGrossMass:
+          type: string
+          example: 413kg
+          description: Verified gross mass
+        portOfEntry:
+          type: string
+          example: NLRTM
+          description: Port of Entry
+        portOfEntryDescription:
+          type: string
+          example: Rotterdam, ZH, NL
+          description: Port of Entry Description
+        portOfDischarge:
+          type: string
+          example: USNWK
+          description: Port of Discharge
+        portOfDischargeDescription:
+          type: string
+          example: Newark, DE, US
+          description: Port of Discharge Description
+        plannedVesselDeparture:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Planned Vessel Departure in epoch milliseconds
+        plannedVesselArrival:
+          type: integer
+          format: int64
+          example: 1514782800000
+          description: Planned Vessel Arrival in epoch milliseconds
+        terminals:
+          type: array
+          description: Terminals
+          items:
+            type: string
+        terminalDescriptions:
+          type: array
+          description: Terminal Descriptions
+          items:
+            type: string
+        cutOffs:
+          type: array
+          description: Cutoffs
+          items:
+            $ref: "#/components/schemas/CutOff"
+        callerRoles:
+          type: array
+          description: The list of caller party roles
+          items:
+            type: string
+        transportPlans:
+          type: array
+          description: The transport summary for a given Transport Equipment
+          items:
+            $ref: "#/components/schemas/TransportPlanResponse"
+    ConsignmentVersionedTransportSummary:
+      type: object
+      properties:
+        consignment:
+          $ref: "#/components/schemas/ConsignmentResponse"
+    CurrentProgressEvent:
+      type: object
+      properties:
+        sequence:
+          type: integer
+          format: int64
+          example: 1
+          description: Sequence number of this event
+        locationKey:
+          type: string
+          example: USNWK
+          description:
+            The value of the highest priority Location field in a group of
+            events.  Only returned on transportSummary queries. Purpose is to
+            help group events that are in the same location.
+        actuals:
+          type: array
+          description: The list of actual events
+          items:
+            $ref: "#/components/schemas/ApiV1TransportEvent"
+        estimates:
+          type: array
+          description: The list of estimated events
+          items:
+            $ref: "#/components/schemas/ApiV1TransportEvent"
+        planned:
+          $ref: "#/components/schemas/ApiV1TransportEvent"
+    Location:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Rotterdam, ZH, NL
+          description: Human readable location data for the event when type is UN/Locode
+        locationKey:
+          type: string
+          description:
+            The value of the highest priority Location field in a group of
+            events.  Only returned on transportSummary queries. Purpose is to
+            help group events that are in the same location.
+        type:
+          type: string
+          description: DEPRECATED (DO NOT USE)-
+            The-type-of-location-provided-in-the-value-field
+          enum:
+            - UN/Locode
+            - GLN
+            - Address
+        value:
+          type: string
+          description: DEPRECATED (DO NOT USE)- Location-data-for-the-event
+        unlocode:
+          type: string
+          example: USNWK
+          description: A valid UN/CEFACT value for a UN/Locode
+        address:
+          $ref: "#/components/schemas/Address"
+        smdgTerminal:
+          type: string
+          example: USEWR-PNCT
+          description: A valid SMDG code for a Ocean Terminal
+        geoCoord:
+          $ref: "#/components/schemas/GeoCoordinates"
+        splc:
+          type: string
+          example: "191821"
+          description: A valid SPLC code for a Rail Terminal
+        gln:
+          type: string
+          example: "1234567890123"
+          description: A GS1 Identification Key for the location
+    CurrentProgressResponse:
+      type: object
+      required:
+        - transportEquipmentList
+      properties:
+        consignment:
+          $ref: "#/components/schemas/ConsignmentSummary"
+        transportEquipmentList:
+          type: array
+          description: The list of transport equipment that are associated with the query
+          items:
+            $ref: "#/components/schemas/TransportEquipmentCPResponse"
+    Harmonized_Code_Response:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          example: "090121"
+          description: Harmonized code
+        description:
+          type: string
+          example: Coffee roasted
+          description: Description of code
+    Equipment_Type_Response:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          example: 20H0
+          description: Equipment Type code
+        description:
+          type: string
+          example: INSULATED CONTAINER
+          description: Description of code
