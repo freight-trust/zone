@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const tdocsFormgen = require('..');
+const tdocsFormgen = require("..");
 
-describe('tdocs-formgen', () => {
-    it('needs tests');
+describe("tdocs-formgen", () => {
+  it("needs tests");
 });

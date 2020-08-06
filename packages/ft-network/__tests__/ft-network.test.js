@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const ftNetwork = require('..');
+const ftNetwork = require("..");
 
-describe('ft-network', () => {
-    it('needs tests');
+describe("ft-network", () => {
+  it("needs tests");
 });

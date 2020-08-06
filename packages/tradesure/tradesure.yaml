@@ -25,7 +25,7 @@ paths:
       description: Check the compliance service is running
       operationId: ping
       responses:
-        '200':
+        "200":
           description: Service is running properly
 
   # Company Endpoints
@@ -55,12 +55,12 @@ paths:
             type: string
             example: 1d1c824a
       responses:
-        '200':
+        "200":
           description: Company and associated metadata
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacCompany'
+                $ref: "#/components/schemas/OfacCompany"
     put:
       tags: [compliance]
       summary: Update company
@@ -90,9 +90,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateOfacCompanyStatus'
+              $ref: "#/components/schemas/UpdateOfacCompanyStatus"
       responses:
-        '200':
+        "200":
           description: Company status updated
   /ofac/companies/{companyID}/watch:
     post:
@@ -124,15 +124,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OfacWatchRequest'
+              $ref: "#/components/schemas/OfacWatchRequest"
       responses:
-        '200':
+        "200":
           description: Company watch added
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacWatch'
-        '404':
+                $ref: "#/components/schemas/OfacWatch"
+        "404":
           description: Company not found
   /ofac/companies/{companyID}/watch/{watchID}:
     delete:
@@ -167,7 +167,7 @@ paths:
             type: string
             example: 0c5e215c
       responses:
-        '200':
+        "200":
           description: Company watch removed
   /ofac/companies/watch:
     post:
@@ -199,14 +199,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OfacWatchRequest'
+              $ref: "#/components/schemas/OfacWatchRequest"
       responses:
-        '200':
+        "200":
           description: Company watch applied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacWatch'
+                $ref: "#/components/schemas/OfacWatch"
   /ofac/companies/watch/{watchID}:
     delete:
       tags: [compliance]
@@ -239,7 +239,7 @@ paths:
             type: string
             example: Jane Smith
       responses:
-        '200':
+        "200":
           description: Company watch removed
   # Customer Endpoints
   /ofac/customers/{customerID}:
@@ -268,12 +268,12 @@ paths:
             type: string
             example: c3cf0f66
       responses:
-        '200':
+        "200":
           description: Customer and associated metadata
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacCustomer'
+                $ref: "#/components/schemas/OfacCustomer"
     put:
       tags: [compliance]
       summary: Update customer
@@ -303,9 +303,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateOfacCustomerStatus'
+              $ref: "#/components/schemas/UpdateOfacCustomerStatus"
       responses:
-        '200':
+        "200":
           description: Customer status updated
   /ofac/customers/{customerID}/watch:
     post:
@@ -337,15 +337,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OfacWatchRequest'
+              $ref: "#/components/schemas/OfacWatchRequest"
       responses:
-        '200':
+        "200":
           description: Customer watch added
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacWatch'
-        '404':
+                $ref: "#/components/schemas/OfacWatch"
+        "404":
           description: Customer not found
   /ofac/customers/{customerID}/watch/{watchID}:
     delete:
@@ -380,7 +380,7 @@ paths:
             type: string
             example: 0c5e215c
       responses:
-        '200':
+        "200":
           description: Customer watch removed
   /ofac/customers/watch:
     post:
@@ -412,14 +412,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OfacWatchRequest'
+              $ref: "#/components/schemas/OfacWatchRequest"
       responses:
-        '200':
+        "200":
           description: Customer watch applied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacWatch'
+                $ref: "#/components/schemas/OfacWatch"
   /ofac/customers/watch/{watchID}:
     delete:
       tags: [compliance]
@@ -452,7 +452,7 @@ paths:
             type: string
             example: Jane Smith
       responses:
-        '200':
+        "200":
           description: Company or Customer watch removed
 
   # SDN Endpoints
@@ -482,12 +482,12 @@ paths:
             type: string
             example: 564dd7d1
       responses:
-        '200':
+        "200":
           description: SDN metadata
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacSDN'
+                $ref: "#/components/schemas/OfacSDN"
   /ofac/sdn/{sdnID}/alts:
     get:
       tags: [compliance]
@@ -513,12 +513,12 @@ paths:
             type: string
             example: 564dd7d1
       responses:
-        '200':
+        "200":
           description: SDN alternate names
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacSDNAltNames'
+                $ref: "#/components/schemas/OfacSDNAltNames"
   /ofac/sdn/{sdnID}/addresses:
     get:
       tags: [compliance]
@@ -544,12 +544,12 @@ paths:
             type: string
             example: 564dd7d1
       responses:
-        '200':
+        "200":
           description: SDN addresses
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfacEntityAddresses'
+                $ref: "#/components/schemas/OfacEntityAddresses"
   # Search Endpoint
   /search:
     get:
@@ -626,7 +626,7 @@ paths:
           in: query
           schema:
             type: string
-            example: '10517860'
+            example: "10517860"
           description: ID value often found in remarks property of an SDN. Takes the form of 'No. NNNNN' as an alphanumeric value.
         - name: limit
           in: query
@@ -647,12 +647,12 @@ paths:
             example: SDGT
           description: Optional filter to only return SDNs whose program case-insensitively matches
       responses:
-        '200':
+        "200":
           description: SDNs returned from a search
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Search'
+                $ref: "#/components/schemas/Search"
 
   # Downloads endpoint
   /downloads:
@@ -680,12 +680,12 @@ paths:
             example: 25
           description: Maximum results returned by a search
       responses:
-        '200':
+        "200":
           description: Recent timestamps and counts of parsed objects
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Downloads'
+                $ref: "#/components/schemas/Downloads"
   /ui/values/{key}:
     get:
       tags: [compliance]
@@ -707,18 +707,18 @@ paths:
             example: 25
           description: Maximum results returned by a search
       responses:
-        '200':
+        "200":
           description: Ordered and distinct list of values for an SDN property
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UIKeys'
-        '400':
+                $ref: "#/components/schemas/UIKeys"
+        "400":
           description: Invalid key
           content:
             application/json:
               schema:
-                $ref: ''
+                $ref: ""
 
 components:
   schemas:
@@ -730,17 +730,17 @@ components:
           type: string
           example: 9574756b
         sdn:
-          $ref: '#/components/schemas/OfacSDN'
+          $ref: "#/components/schemas/OfacSDN"
         addresses:
           type: array
           items:
-            $ref: '#/components/schemas/OfacEntityAddress'
+            $ref: "#/components/schemas/OfacEntityAddress"
         alts:
           type: array
           items:
-            $ref: '#/components/schemas/OfacAlt'
+            $ref: "#/components/schemas/OfacAlt"
         status:
-          $ref: '#/components/schemas/OfacCompanyStatus'
+          $ref: "#/components/schemas/OfacCompanyStatus"
     OfacCompanyStatus:
       description: Status properties of an OFAC Company
       properties:
@@ -751,7 +751,7 @@ components:
         note:
           description: Optional note from updating status
           type: string
-          example: 'Incorrect match'
+          example: "Incorrect match"
         status:
           description: Manually applied status for OFAC Company
           type: string
@@ -770,17 +770,17 @@ components:
           type: string
           example: 9574756b
         sdn:
-          $ref: '#/components/schemas/OfacSDN'
+          $ref: "#/components/schemas/OfacSDN"
         addresses:
           type: array
           items:
-            $ref: '#/components/schemas/OfacEntityAddress'
+            $ref: "#/components/schemas/OfacEntityAddress"
         alts:
           type: array
           items:
-            $ref: '#/components/schemas/OfacAlt'
+            $ref: "#/components/schemas/OfacAlt"
         status:
-          $ref: '#/components/schemas/OfacCustomerStatus'
+          $ref: "#/components/schemas/OfacCustomerStatus"
     OfacCustomerStatus:
       description: Status properties of an OFAC Customer
       properties:
@@ -791,7 +791,7 @@ components:
         note:
           description: Optional note from updating status
           type: string
-          example: 'Incorrect match'
+          example: "Incorrect match"
         status:
           description: Manually applied status for OFAC Customer
           type: string
@@ -833,7 +833,7 @@ components:
     OfacEntityAddresses:
       type: array
       items:
-        $ref: '#/components/schemas/OfacEntityAddress'
+        $ref: "#/components/schemas/OfacEntityAddress"
     OfacEntityAddress:
       description: Physical address from OFAC list
       properties:
@@ -858,7 +858,7 @@ components:
     OfacSDNAltNames:
       type: array
       items:
-        $ref: '#/components/schemas/OfacAlt'
+        $ref: "#/components/schemas/OfacAlt"
     OfacAlt:
       description: Alternate name from OFAC list
       properties:
@@ -890,7 +890,7 @@ components:
         streetAddress:
           type: string
           description: "Denied Person's street address"
-          example: 'REGISTER NUMBER: 78795-379, FEDERAL CORRECTIONAL INSTITUTION, P.O. BOX 4200'
+          example: "REGISTER NUMBER: 78795-379, FEDERAL CORRECTIONAL INSTITUTION, P.O. BOX 4200"
         city:
           type: string
           description: "Denied Person's city"
@@ -910,19 +910,19 @@ components:
         effectiveDate:
           type: string
           description: Date when denial came into effect
-          example: '06/15/2016'
+          example: "06/15/2016"
         expirationDate:
           type: string
           description: Date when denial expires, if blank denial never expires
-          example: '06/15/2025'
+          example: "06/15/2025"
         standardOrder:
           type: string
           description: Denotes whether or not the Denied Person was added by a standard order
-          example: 'Y'
+          example: "Y"
         lastUpdate:
           type: string
           description: Most recent date when the Denied Person record was updated
-          example: '2016-06-22'
+          example: "2016-06-22"
         action:
           type: string
           description: Most recent action taken regarding the denial
@@ -930,7 +930,7 @@ components:
         frCitation:
           type: string
           description: Reference to the order's citation in the Federal Register
-          example: '81.F.R. 40658 6/22/2016'
+          example: "81.F.R. 40658 6/22/2016"
         match:
           type: number
           example: 0.92
@@ -960,13 +960,21 @@ components:
           items:
             type: string
           description: Addresses associated with the entity
-          example: ["D. Retyum, Luzhski Raion, Leningradskaya Obl., 188230, RU", "Retiun Village, Lujskiy District, Leningrad Region, RU"]
+          example:
+            [
+              "D. Retyum, Luzhski Raion, Leningradskaya Obl., 188230, RU",
+              "Retiun Village, Lujskiy District, Leningrad Region, RU",
+            ]
         remarks:
           type: array
           items:
             type: string
           description: Additional details regarding the entity
-          example: ["For more information on directives, please visit the following link: http://www.treasury.gov/resource-center/sanctions/Programs/Pages/ukraine.aspx#directives.", "(Linked To: OPEN JOINT-STOCK COMPANY ROSNEFT OIL COMPANY)"]
+          example:
+            [
+              "For more information on directives, please visit the following link: http://www.treasury.gov/resource-center/sanctions/Programs/Pages/ukraine.aspx#directives.",
+              "(Linked To: OPEN JOINT-STOCK COMPANY ROSNEFT OIL COMPANY)",
+            ]
         alternateNames:
           type: array
           items:
@@ -978,7 +986,12 @@ components:
           items:
             type: string
           description: IDs on file for the entity
-          example: ["Subject to Directive 4, Executive Order 13662 Directive Determination", "vcng@rosneft.ru, Email Address", "Subject to Directive 2, Executive Order 13662 Directive Determination"]
+          example:
+            [
+              "Subject to Directive 4, Executive Order 13662 Directive Determination",
+              "vcng@rosneft.ru, Email Address",
+              "Subject to Directive 2, Executive Order 13662 Directive Determination",
+            ]
         sourceListURL:
           type: string
           description: The link to the official SSI list
@@ -999,7 +1012,11 @@ components:
           items:
             type: string
           description: Addresses associated with the entity
-          example: ["D. Retyum, Luzhski Raion, Leningradskaya Obl., 188230, RU", "Retiun Village, Lujskiy District, Leningrad Region, RU"]
+          example:
+            [
+              "D. Retyum, Luzhski Raion, Leningradskaya Obl., 188230, RU",
+              "Retiun Village, Lujskiy District, Leningrad Region, RU",
+            ]
         alternateNames:
           type: array
           items:
@@ -1067,28 +1084,28 @@ components:
         SDNs:
           type: array
           items:
-            $ref: '#/components/schemas/OfacSDN'
+            $ref: "#/components/schemas/OfacSDN"
         altNames:
           type: array
           items:
-            $ref: '#/components/schemas/OfacAlt'
+            $ref: "#/components/schemas/OfacAlt"
         addresses:
           type: array
           items:
-            $ref: '#/components/schemas/OfacEntityAddress'
+            $ref: "#/components/schemas/OfacEntityAddress"
         sectoralSanctions:
           type: array
           items:
-            $ref: '#/components/schemas/SSI'
+            $ref: "#/components/schemas/SSI"
         # BIS
         deniedPersons:
           type: array
           items:
-            $ref: '#/components/schemas/DPL'
+            $ref: "#/components/schemas/DPL"
         bisEntities:
           type: array
           items:
-            $ref: '#/components/schemas/BISEntities'
+            $ref: "#/components/schemas/BISEntities"
         # Metadata
         refreshedAt:
           type: string
@@ -1118,7 +1135,7 @@ components:
     Downloads:
       type: array
       items:
-        $ref: '#/components/schemas/Download'
+        $ref: "#/components/schemas/Download"
     Download:
       description: Metadata and stats about downloaded OFAC data
       properties:

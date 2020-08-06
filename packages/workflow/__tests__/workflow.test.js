@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const workflow = require('..');
+const workflow = require("..");
 
-describe('workflow', () => {
-    it('needs tests');
+describe("workflow", () => {
+  it("needs tests");
 });

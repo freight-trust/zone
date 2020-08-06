@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
 module.exports = ftProtocol;
 
 function ftProtocol() {
-    // TODO
+  // TODO
 }

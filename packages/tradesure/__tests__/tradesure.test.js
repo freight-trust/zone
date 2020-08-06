@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const tradesure = require('..');
+const tradesure = require("..");
 
-describe('tradesure', () => {
-    it('needs tests');
+describe("tradesure", () => {
+  it("needs tests");
 });

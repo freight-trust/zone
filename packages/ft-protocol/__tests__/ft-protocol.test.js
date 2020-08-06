@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const ftProtocol = require('..');
+const ftProtocol = require("..");
 
-describe('ft-protocol', () => {
-    it('needs tests');
+describe("ft-protocol", () => {
+  it("needs tests");
 });

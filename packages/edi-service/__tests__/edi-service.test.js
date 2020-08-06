@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const ediService = require('..');
+const ediService = require("..");
 
-describe('edi-service', () => {
-    it('needs tests');
+describe("edi-service", () => {
+  it("needs tests");
 });
